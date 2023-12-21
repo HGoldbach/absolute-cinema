@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import com.goldbach.absolutecinema.ui.views.MovieHomeDestination
+import com.goldbach.absolutecinema.ui.views.MovieHomeView
 
 @Composable
 fun MovieNavHost(
@@ -12,9 +15,13 @@ fun MovieNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "",
+        startDestination = MovieHomeDestination.route,
         modifier = modifier
     ) {
+        composable(route = MovieHomeDestination.route) {
+            MovieHomeView(
 
+            )
+        }
     }
 }
