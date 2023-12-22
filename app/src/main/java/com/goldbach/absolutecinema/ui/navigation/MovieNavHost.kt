@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.goldbach.absolutecinema.ui.views.HomeView
+import com.goldbach.absolutecinema.ui.views.HomeViewDestination
 import com.goldbach.absolutecinema.ui.views.MovieHomeDestination
 import com.goldbach.absolutecinema.ui.views.MovieHomeView
 
@@ -20,7 +22,13 @@ fun MovieNavHost(
     ) {
         composable(route = MovieHomeDestination.route) {
             MovieHomeView(
-
+                navigateToMovie = { navController.navigate(HomeViewDestination.route) }
+            )
+        }
+        composable(route = HomeViewDestination.route) {
+            HomeView(
+                retryAction = { /*TODO*/ },
+                navigateUp = { navController.navigateUp() }
             )
         }
     }

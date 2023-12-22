@@ -30,6 +30,7 @@ object MovieHomeDestination : NavigationDestination {
 
 @Composable
 fun MovieHomeView(
+    navigateToMovie: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -47,7 +48,7 @@ fun MovieHomeView(
             color = MaterialTheme.colorScheme.tertiary
         )
         ElevatedButton(
-            onClick = { /*TODO*/ },
+            onClick = navigateToMovie,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -93,6 +94,6 @@ fun MovieHomeView(
 @Composable
 fun MovieHomeViewPreview() {
     AbsoluteCinemaTheme {
-        MovieHomeView()
+        MovieHomeView({})
     }
 }

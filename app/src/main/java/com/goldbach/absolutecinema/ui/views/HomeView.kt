@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,26 +25,49 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.goldbach.absolutecinema.R
 import com.goldbach.absolutecinema.data.Constants
 import com.goldbach.absolutecinema.data.models.Movie
+import com.goldbach.absolutecinema.ui.AppViewModelProvider
+import com.goldbach.absolutecinema.ui.MovieTopAppBar
+import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 import com.goldbach.absolutecinema.ui.viewmodels.HomeViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.MovieUiState
 
+object HomeViewDestination : NavigationDestination {
+    override val route = "home_view"
+    override val title = "Home View"
+}
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeView(
-    movieUiState: MovieUiState,
-    retryAction: () -> Unit,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
+    canNavigateBack: Boolean = true,
+    retryAction: () -> Unit,
+    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-   when(movieUiState) {
-       is MovieUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
-       is MovieUiState.Success -> SuccessScreen(movieUiState.movies, modifier)
-       is MovieUiState.Error -> ErrorScreen(retryAction, modifier = modifier.fillMaxSize())
-   }
+    val movieUiState = viewModel.movieUiState
+    Scaffold(
+        topBar = {
+            MovieTopAppBar(
+                title = HomeViewDestination.title,
+                canNavigateBack = canNavigateBack,
+                navigateUp = navigateUp
+            )
+        }
+    ) {
+        when(movieUiState) {
+            is MovieUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
+            is MovieUiState.Success -> SuccessScreen(movieUiState.movies, modifier = Modifier.padding(it))
+            is MovieUiState.Error -> ErrorScreen(retryAction, modifier = modifier.fillMaxSize())
+        }
+    }
+
 }
 
 @Composable
