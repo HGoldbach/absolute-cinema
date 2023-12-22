@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.goldbach.absolutecinema.data.models.Genre
 import com.goldbach.absolutecinema.data.repositories.MovieRepository
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 
 
@@ -36,6 +37,8 @@ class MovieMenuViewModel(private val movieRepository: MovieRepository) : ViewMod
                     movieRepository.getGenres().body()!!.genres
                 )
             } catch (e: IOException) {
+                MenuUiState.Error
+            } catch (e: HttpException) {
                 MenuUiState.Error
             }
         }

@@ -9,7 +9,9 @@ import retrofit2.Response
 
 interface MovieRepository {
     suspend fun getMovies(): Response<MovieDTO>
+    suspend fun getMoviesByGenre(id: Int): Response<MovieDTO>
     suspend fun getGenres(): Response<GenreDTO>
+
 }
 
 class NetworkMovieRepository(
@@ -17,6 +19,10 @@ class NetworkMovieRepository(
 ) : MovieRepository {
     override suspend fun getMovies(): Response<MovieDTO> {
         return movieApiService.getMovies(Constants.API_KEY)
+    }
+
+    override suspend fun getMoviesByGenre(id: Int): Response<MovieDTO> {
+        return movieApiService.getMoviesByGenre(id, Constants.API_KEY)
     }
 
     override suspend fun getGenres(): Response<GenreDTO> {

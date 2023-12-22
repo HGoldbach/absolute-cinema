@@ -1,5 +1,6 @@
 package com.goldbach.absolutecinema.ui.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -82,7 +83,11 @@ fun MenuSuccessScreen(
             .padding(dimensionResource(id = R.dimen.padding_medium))
     ) {
         items(genres) { genre ->
-            MenuGenreItem(genre = genre)
+            MenuGenreItem(
+                genre = genre,
+                modifier = Modifier,
+                onItemClick = { navigateToGenreSelected(genre.id) }
+            )
         }
     }
 }
@@ -91,17 +96,18 @@ fun MenuSuccessScreen(
 @Composable
 fun MenuGenreItem(
     genre: Genre,
+    onItemClick: (Genre) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .padding(dimensionResource(id = R.dimen.padding_small)),
-        onClick = {},
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.onTertiary
-        )
+        ),
+        onClick = { onItemClick(genre) }
     ) {
         Text(
             text = genre.name,
