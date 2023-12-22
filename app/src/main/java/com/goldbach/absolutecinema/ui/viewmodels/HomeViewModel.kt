@@ -50,14 +50,4 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
         }
     }
 
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as MovieApplication)
-                val movieRepository = application.container.movieRepository
-                HomeViewModel(movieRepository = movieRepository)
-            }
-        }
-    }
-
 }

@@ -9,6 +9,8 @@ import com.goldbach.absolutecinema.ui.views.HomeView
 import com.goldbach.absolutecinema.ui.views.HomeViewDestination
 import com.goldbach.absolutecinema.ui.views.MovieHomeDestination
 import com.goldbach.absolutecinema.ui.views.MovieHomeView
+import com.goldbach.absolutecinema.ui.views.MovieMenuDestination
+import com.goldbach.absolutecinema.ui.views.MovieMenuView
 
 @Composable
 fun MovieNavHost(
@@ -22,12 +24,17 @@ fun MovieNavHost(
     ) {
         composable(route = MovieHomeDestination.route) {
             MovieHomeView(
-                navigateToMovie = { navController.navigate(HomeViewDestination.route) }
+                navigateToMovie = { navController.navigate(MovieMenuDestination.route) }
             )
         }
         composable(route = HomeViewDestination.route) {
             HomeView(
                 retryAction = { /*TODO*/ },
+                navigateUp = { navController.navigateUp() }
+            )
+        }
+        composable(route = MovieMenuDestination.route) {
+            MovieMenuView(
                 navigateUp = { navController.navigateUp() }
             )
         }

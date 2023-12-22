@@ -2,7 +2,6 @@ package com.goldbach.absolutecinema.ui.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -19,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -62,16 +59,16 @@ fun HomeView(
         }
     ) {
         when(movieUiState) {
-            is MovieUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
-            is MovieUiState.Success -> SuccessScreen(movieUiState.movies, modifier = Modifier.padding(it))
-            is MovieUiState.Error -> ErrorScreen(retryAction, modifier = modifier.fillMaxSize())
+            is MovieUiState.Loading -> HomeLoadingScreen(modifier = Modifier.fillMaxSize())
+            is MovieUiState.Success -> HomeSuccessScreen(movieUiState.movies, modifier = Modifier.padding(it))
+            is MovieUiState.Error -> HomeErrorScreen(retryAction, modifier = modifier.fillMaxSize())
         }
     }
 
 }
 
 @Composable
-fun SuccessScreen(
+fun HomeSuccessScreen(
     movies: List<Movie>,
     modifier: Modifier = Modifier
 ) {
@@ -122,7 +119,7 @@ fun SuccessScreen(
 @Composable
 fun SuccessScreenPreview() {
     AbsoluteCinemaTheme {
-        SuccessScreen(movies = listOf(
+        HomeSuccessScreen(movies = listOf(
             Movie(
                 "1",
                 "Wonka",
@@ -135,7 +132,7 @@ fun SuccessScreenPreview() {
 }
 
 @Composable
-fun LoadingScreen(modifier: Modifier = Modifier) {
+fun HomeLoadingScreen(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(id = R.drawable.loading_img), 
         contentDescription = "Loading",
@@ -144,7 +141,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ErrorScreen(
+fun HomeErrorScreen(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

@@ -6,11 +6,17 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.goldbach.absolutecinema.MovieApplication
 import com.goldbach.absolutecinema.ui.viewmodels.HomeViewModel
+import com.goldbach.absolutecinema.ui.viewmodels.MovieMenuViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             HomeViewModel(
+                movieApplication().container.movieRepository
+            )
+        }
+        initializer {
+            MovieMenuViewModel(
                 movieApplication().container.movieRepository
             )
         }
