@@ -13,16 +13,26 @@ interface MovieApiService {
         @Query("api_key") apiKey: String
     ): Response<MovieDTO>
 
-    @GET("discover/movie?with_genres=12")
+    @GET("discover/movie")
     suspend fun getMoviesByGenre(
         @Query("with_genres") genre: Int,
         @Query("api_key") apiKey: String
     ): Response<MovieDTO>
 
     @GET("genre/movie/list")
-    suspend fun getGenres(
+    suspend fun getMovieGenres(
         @Query("api_key") apiKey: String
     ): Response<GenreDTO>
 
+    @GET("genre/tv/list")
+    suspend fun getSeriesGenres(
+        @Query("api_key") apiKey: String
+    ) : Response<GenreDTO>
+
+    @GET("discover/tv")
+    suspend fun getSeriesByGenre(
+        @Query("with_genres") genre: Int,
+        @Query("api_key") apiKey: String
+    ) : Response<MovieDTO>
 
 }

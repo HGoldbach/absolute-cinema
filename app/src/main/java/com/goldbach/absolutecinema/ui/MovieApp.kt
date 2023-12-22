@@ -17,33 +17,20 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.tooling.preview.Preview
 import com.goldbach.absolutecinema.ui.viewmodels.HomeViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.goldbach.absolutecinema.ui.navigation.MovieNavHost
+import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 import com.goldbach.absolutecinema.ui.views.HomeView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieApp(navController: NavHostController = rememberNavController()) {
     MovieNavHost(navController = navController)
-//    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-//    Scaffold(
-//        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-//        topBar = { MovieTopAppBar(scrollBehavior = scrollBehavior) }
-//    ) {
-//        Surface(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(it)
-//        ) {
-//            val movieViewModel: HomeViewModel =
-//                viewModel(factory = HomeViewModel.Factory)
-//            HomeView(movieUiState = movieViewModel.movieUiState, retryAction = { /*TODO*/ })
-//        }
-//    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,4 +57,14 @@ fun MovieTopAppBar(
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+fun MovieTopAppBarPreview() {
+    AbsoluteCinemaTheme {
+        MovieTopAppBar(title = "Teste", canNavigateBack = true) {
+        }
+    }
 }

@@ -3,14 +3,14 @@ package com.goldbach.absolutecinema.data.repositories
 import com.goldbach.absolutecinema.data.Constants
 import com.goldbach.absolutecinema.data.dto.GenreDTO
 import com.goldbach.absolutecinema.data.dto.MovieDTO
-import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.data.network.MovieApiService
 import retrofit2.Response
 
 interface MovieRepository {
     suspend fun getMovies(): Response<MovieDTO>
     suspend fun getMoviesByGenre(id: Int): Response<MovieDTO>
-    suspend fun getGenres(): Response<GenreDTO>
+    suspend fun getSeriesByGenre(id: Int): Response<MovieDTO>
+    suspend fun getGenres(type: String): Response<GenreDTO>
 
 }
 
@@ -25,7 +25,12 @@ class NetworkMovieRepository(
         return movieApiService.getMoviesByGenre(id, Constants.API_KEY)
     }
 
-    override suspend fun getGenres(): Response<GenreDTO> {
-        return movieApiService.getGenres(Constants.API_KEY)
+    override suspend fun getSeriesByGenre(id: Int): Response<MovieDTO> {
+        return movieApiService.getSeriesByGenre(id, Constants.API_KEY)
+    }
+
+    override suspend fun getGenres(type: String): Response<GenreDTO> {
+        return if (type == "Movie") movieApiService.getMovieGenres(Constants.API_KEY)
+               else movieApiService.getSeriesGenres(Constants.API_KEY)
     }
 }

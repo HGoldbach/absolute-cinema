@@ -15,6 +15,10 @@ import com.goldbach.absolutecinema.ui.views.MovieHomeDestination
 import com.goldbach.absolutecinema.ui.views.MovieHomeView
 import com.goldbach.absolutecinema.ui.views.MovieMenuDestination
 import com.goldbach.absolutecinema.ui.views.MovieMenuView
+import com.goldbach.absolutecinema.ui.views.SerieGenreDestination
+import com.goldbach.absolutecinema.ui.views.SerieGenreView
+import com.goldbach.absolutecinema.ui.views.SerieMenuDestination
+import com.goldbach.absolutecinema.ui.views.SerieMenuView
 
 @Composable
 fun MovieNavHost(
@@ -28,7 +32,8 @@ fun MovieNavHost(
     ) {
         composable(route = MovieHomeDestination.route) {
             MovieHomeView(
-                navigateToMovie = { navController.navigate(MovieMenuDestination.route) }
+                navigateToMovie = { navController.navigate(MovieMenuDestination.route) },
+                navigateToSeries = { navController.navigate(SerieMenuDestination.route) }
             )
         }
         composable(route = HomeViewDestination.route) {
@@ -51,6 +56,22 @@ fun MovieNavHost(
             MovieMenuView(
                 navigateUp = { navController.navigateUp() },
                 navigateToGenreSelected = { navController.navigate("${MovieGenreDestination.route}/$it") }
+            )
+        }
+        composable(route = SerieMenuDestination.route) {
+            SerieMenuView(
+                navigateUp = { navController.navigateUp() },
+                navigateToGenreSelected = { navController.navigate("${SerieGenreDestination.route}/${it}") }
+            )
+        }
+        composable(
+            route = SerieGenreDestination.routeWithArgs,
+            arguments = listOf(navArgument(SerieGenreDestination.genreIdArg) {
+                type = NavType.IntType
+            })
+        ) {
+            SerieGenreView(
+                navigateUp = { navController.navigateUp() }
             )
         }
 

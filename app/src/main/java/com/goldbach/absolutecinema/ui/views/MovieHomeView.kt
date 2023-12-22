@@ -31,6 +31,7 @@ object MovieHomeDestination : NavigationDestination {
 @Composable
 fun MovieHomeView(
     navigateToMovie: () -> Unit,
+    navigateToSeries: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -68,7 +69,7 @@ fun MovieHomeView(
         }
         Spacer(modifier = Modifier.size(5.dp))
         ElevatedButton(
-            onClick = { /*TODO*/ },
+            onClick = navigateToSeries,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -94,6 +95,6 @@ fun MovieHomeView(
 @Composable
 fun MovieHomeViewPreview() {
     AbsoluteCinemaTheme {
-        MovieHomeView({})
+        MovieHomeView({},{})
     }
 }

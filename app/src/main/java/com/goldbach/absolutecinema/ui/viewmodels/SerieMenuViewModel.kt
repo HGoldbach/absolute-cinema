@@ -5,24 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.goldbach.absolutecinema.data.models.Genre
 import com.goldbach.absolutecinema.data.repositories.MovieRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
+class SerieMenuViewModel(private val movieRepository: MovieRepository) : ViewModel() {
 
-sealed interface MenuUiState {
-    data class Success(val genres: List<Genre>) : MenuUiState
-    object Loading : MenuUiState
-    object Error : MenuUiState
-}
-
-
-
-class MovieMenuViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-
-    var movieUiState: MenuUiState by mutableStateOf(MenuUiState.Loading)
+    var menuUiState: MenuUiState by mutableStateOf(MenuUiState.Loading)
         private set
 
     init {
@@ -31,10 +21,10 @@ class MovieMenuViewModel(private val movieRepository: MovieRepository) : ViewMod
 
     private fun getGenres() {
         viewModelScope.launch {
-            movieUiState = MenuUiState.Loading
-            movieUiState = try {
+            menuUiState = MenuUiState.Loading
+            menuUiState = try {
                 MenuUiState.Success(
-                    movieRepository.getGenres("Movie").body()!!.genres
+                    movieRepository.getGenres("Series").body()!!.genres
                 )
             } catch (e: IOException) {
                 MenuUiState.Error
@@ -43,5 +33,4 @@ class MovieMenuViewModel(private val movieRepository: MovieRepository) : ViewMod
             }
         }
     }
-
 }

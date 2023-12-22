@@ -9,6 +9,8 @@ import com.goldbach.absolutecinema.MovieApplication
 import com.goldbach.absolutecinema.ui.viewmodels.HomeViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.MovieGenreViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.MovieMenuViewModel
+import com.goldbach.absolutecinema.ui.viewmodels.SerieGenreViewModel
+import com.goldbach.absolutecinema.ui.viewmodels.SerieMenuViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
@@ -24,6 +26,17 @@ object AppViewModelProvider {
         }
         initializer {
             MovieGenreViewModel(
+                this.createSavedStateHandle(),
+                movieApplication().container.movieRepository
+            )
+        }
+        initializer {
+            SerieMenuViewModel(
+                movieApplication().container.movieRepository
+            )
+        }
+        initializer {
+            SerieGenreViewModel(
                 this.createSavedStateHandle(),
                 movieApplication().container.movieRepository
             )
