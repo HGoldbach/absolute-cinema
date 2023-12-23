@@ -8,8 +8,9 @@ import retrofit2.http.Query
 
 interface MovieApiService {
 
-    @GET("movie/popular")
-    suspend fun getMovies(
+    // Movies Endpoints
+    @GET("movie/upcoming")
+    suspend fun getRecentlyReleasedMovies(
         @Query("api_key") apiKey: String
     ): Response<MovieDTO>
 
@@ -24,6 +25,8 @@ interface MovieApiService {
         @Query("api_key") apiKey: String
     ): Response<GenreDTO>
 
+
+    // Series Endpoints
     @GET("genre/tv/list")
     suspend fun getSeriesGenres(
         @Query("api_key") apiKey: String
@@ -32,6 +35,11 @@ interface MovieApiService {
     @GET("discover/tv")
     suspend fun getSeriesByGenre(
         @Query("with_genres") genre: Int,
+        @Query("api_key") apiKey: String
+    ) : Response<MovieDTO>
+
+    @GET("tv/popular")
+    suspend fun getPopularSeries(
         @Query("api_key") apiKey: String
     ) : Response<MovieDTO>
 
