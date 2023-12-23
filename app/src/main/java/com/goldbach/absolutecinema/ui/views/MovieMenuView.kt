@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.goldbach.absolutecinema.R
 import com.goldbach.absolutecinema.data.models.Genre
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
+import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.MovieTopAppBar
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
@@ -42,6 +43,8 @@ fun MovieMenuView(
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToSeries: () -> Unit,
     navigateToGenreSelected: (Int) -> Unit,
     viewModel: MovieMenuViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -52,6 +55,13 @@ fun MovieMenuView(
                 title = MovieMenuDestination.title,
                 canNavigateBack = canNavigateBack,
                 navigateUp = navigateUp
+            )
+        },
+        bottomBar = {
+            MovieBottomAppBar(
+                navigateToHome = navigateToHome,
+                navigateToSeries =  navigateToSeries,
+                currentlyRoute = MovieMenuDestination.title
             )
         }
     ) {

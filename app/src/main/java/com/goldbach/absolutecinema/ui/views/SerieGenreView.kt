@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
+import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.MovieTopAppBar
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.viewmodels.MovieUiState
@@ -27,6 +28,8 @@ fun SerieGenreView(
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToMovies: () -> Unit,
     viewModel: SerieGenreViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState: MovieUiState = viewModel.movieUiState
@@ -36,6 +39,14 @@ fun SerieGenreView(
                 title = SerieGenreDestination.title,
                 canNavigateBack = canNavigateBack,
                 navigateUp = navigateUp
+            )
+        },
+        bottomBar = {
+            MovieBottomAppBar(
+                navigateToHome = navigateToHome,
+                navigateToSeries = navigateUp,
+                navigateToMovies = navigateToMovies,
+                currentlyRoute = SerieGenreDestination.title
             )
         }
     ) {

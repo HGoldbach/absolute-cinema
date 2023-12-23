@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
+import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.MovieTopAppBar
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.viewmodels.MenuUiState
@@ -25,6 +26,8 @@ fun SerieMenuView(
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToMovies: () -> Unit,
     navigateToGenreSelected: (Int) -> Unit,
     viewModel: SerieMenuViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -36,7 +39,15 @@ fun SerieMenuView(
                 canNavigateBack = canNavigateBack,
                 navigateUp = navigateUp
             )
+        },
+        bottomBar = {
+            MovieBottomAppBar(
+                navigateToHome = navigateToHome,
+                navigateToMovies = navigateToMovies,
+                currentlyRoute = SerieMenuDestination.title
+            )
         }
+
     ) {
         when(menuUiState) {
             is MenuUiState.Loading -> MenuLoadingScreen(modifier = Modifier

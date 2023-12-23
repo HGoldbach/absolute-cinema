@@ -7,8 +7,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.goldbach.absolutecinema.ui.views.HomeView
-import com.goldbach.absolutecinema.ui.views.HomeViewDestination
 import com.goldbach.absolutecinema.ui.views.MovieGenreDestination
 import com.goldbach.absolutecinema.ui.views.MovieGenreView
 import com.goldbach.absolutecinema.ui.views.MovieHomeDestination
@@ -30,16 +28,22 @@ fun MovieNavHost(
         startDestination = MovieHomeDestination.route,
         modifier = modifier
     ) {
+
+        // Home
         composable(route = MovieHomeDestination.route) {
             MovieHomeView(
-                navigateToMovie = { navController.navigate(MovieMenuDestination.route) },
+                navigateToMovies = { navController.navigate(MovieMenuDestination.route) },
                 navigateToSeries = { navController.navigate(SerieMenuDestination.route) }
             )
         }
-        composable(route = HomeViewDestination.route) {
-            HomeView(
-                retryAction = { /*TODO*/ },
-                navigateUp = { navController.navigateUp() }
+
+        // Movies
+        composable(route = MovieMenuDestination.route) {
+            MovieMenuView(
+                navigateUp = { navController.navigateUp() },
+                navigateToHome = { navController.navigate(MovieHomeDestination.route) },
+                navigateToSeries = { navController.navigate(SerieMenuDestination.route)},
+                navigateToGenreSelected = { navController.navigate("${MovieGenreDestination.route}/$it") }
             )
         }
         composable(
@@ -49,18 +53,18 @@ fun MovieNavHost(
             })
         ) {
             MovieGenreView(
+                navigateToSeries = { navController.navigate(SerieMenuDestination.route) },
+                navigateToHome = { navController.navigate(MovieHomeDestination.route) },
                 navigateUp = { navController.navigateUp() },
             )
         }
-        composable(route = MovieMenuDestination.route) {
-            MovieMenuView(
-                navigateUp = { navController.navigateUp() },
-                navigateToGenreSelected = { navController.navigate("${MovieGenreDestination.route}/$it") }
-            )
-        }
+
+        // Series
         composable(route = SerieMenuDestination.route) {
             SerieMenuView(
                 navigateUp = { navController.navigateUp() },
+                navigateToHome = { navController.navigate(MovieHomeDestination.route) },
+                navigateToMovies = { navController.navigate(MovieMenuDestination.route) },
                 navigateToGenreSelected = { navController.navigate("${SerieGenreDestination.route}/${it}") }
             )
         }
@@ -71,7 +75,9 @@ fun MovieNavHost(
             })
         ) {
             SerieGenreView(
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
+                navigateToHome = { navController.navigate(MovieHomeDestination.route) },
+                navigateToMovies = { navController.navigate(MovieMenuDestination.route) }
             )
         }
 

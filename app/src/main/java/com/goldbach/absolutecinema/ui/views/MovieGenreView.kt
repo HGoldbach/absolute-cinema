@@ -30,6 +30,7 @@ import com.goldbach.absolutecinema.R
 import com.goldbach.absolutecinema.data.Constants
 import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
+import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.MovieTopAppBar
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.viewmodels.MovieGenreViewModel
@@ -47,6 +48,8 @@ object MovieGenreDestination : NavigationDestination {
 fun MovieGenreView(
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit,
+    navigateToSeries: () -> Unit,
+    navigateToHome: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MovieGenreViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -57,6 +60,14 @@ fun MovieGenreView(
                 title = MovieGenreDestination.title,
                 canNavigateBack = canNavigateBack,
                 navigateUp = navigateUp
+            )
+        },
+        bottomBar = {
+            MovieBottomAppBar(
+                navigateToHome = navigateToHome,
+                navigateToMovies = navigateUp,
+                navigateToSeries = navigateToSeries,
+                currentlyRoute = MovieGenreDestination.title
             )
         }
     ) {
