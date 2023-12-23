@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 sealed interface MovieUiState {
-    data class Success(val movies: List<Movie>) : MovieUiState
+    data class Success(val movies: List<Movie>, val series: List<Movie> = emptyList()) : MovieUiState
     object Error : MovieUiState
     object Loading : MovieUiState
 }
@@ -22,35 +22,17 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
     var movieUiState: MovieUiState by mutableStateOf(MovieUiState.Loading)
         private set
 
-    var serieUiState: MovieUiState by mutableStateOf(MovieUiState.Loading)
-        private set
-
     init {
-        getRecentlyReleasedMovies()
-        getPopularSeries()
+        getRecentlyReleasedMoviesAndPopularSeries()
     }
 
-    private fun getRecentlyReleasedMovies() {
+    private fun getRecentlyReleasedMoviesAndPopularSeries() {
         viewModelScope.launch {
             movieUiState = MovieUiState.Loading
             movieUiState = try {
                 MovieUiState.Success(
-                    movieRepository.getRecentlyReleasedMovies().body()!!.results
-                )
-            } catch (e: IOException) {
-                MovieUiState.Error
-            } catch (e: HttpException) {
-                MovieUiState.Error
-            }
-        }
-    }
-
-    private fun getPopularSeries() {
-        viewModelScope.launch {
-            serieUiState = MovieUiState.Loading
-            serieUiState = try {
-                MovieUiState.Success(
-                    movieRepository.getPopularSeries().body()!!.results
+                    movies = movieRepository.getRecentlyReleasedMovies().body()!!.results,
+                    series = movieRepository.getPopularSeries().body()!!.results
                 )
             } catch (e: IOException) {
                 MovieUiState.Error

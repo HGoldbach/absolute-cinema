@@ -1,6 +1,7 @@
 package com.goldbach.absolutecinema.ui.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,11 +22,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +44,7 @@ import com.goldbach.absolutecinema.data.Constants
 import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
 import com.goldbach.absolutecinema.ui.MovieBottomAppBar
+import com.goldbach.absolutecinema.ui.components.MovieModal
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 import com.goldbach.absolutecinema.ui.viewmodels.HomeViewModel
@@ -56,7 +63,6 @@ fun MovieHomeView(
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val movieUiState: MovieUiState = viewModel.movieUiState
-    val serieUiState: MovieUiState = viewModel.serieUiState
     Scaffold(
         bottomBar = {
             MovieBottomAppBar(
@@ -67,18 +73,18 @@ fun MovieHomeView(
             )
         }
     ) {
-        when {
-            movieUiState is MovieUiState.Loading && serieUiState is MovieUiState.Loading -> MenuLoadingScreen(
+        when (movieUiState) {
+            is MovieUiState.Loading -> MenuLoadingScreen(
                 modifier = Modifier.padding(it)
             )
 
-            movieUiState is MovieUiState.Error && serieUiState is MovieUiState.Error -> MenuErrorScreen(
+            is MovieUiState.Error -> MenuErrorScreen(
                 modifier = Modifier.padding(it)
             )
 
-            movieUiState is MovieUiState.Success && serieUiState is MovieUiState.Success -> HomeBodyScreen(
+            is MovieUiState.Success -> HomeBodyScreen(
                 moviesList = movieUiState.movies,
-                seriesList = serieUiState.movies,
+                seriesList = movieUiState.series,
                 modifier = Modifier
                     .fillMaxSize()
             )
@@ -182,11 +188,16 @@ fun HomeMoviesItem(
     movie: Movie,
     modifier: Modifier = Modifier
 ) {
+    var showMovieDialog by remember {
+        mutableStateOf(false)
+    }
     Card(
-        modifier = modifier.padding(
-            vertical = 8.dp,
-            horizontal = 4.dp
-        ),
+        modifier = modifier
+            .padding(
+                vertical = 8.dp,
+                horizontal = 4.dp
+            )
+            .clickable { showMovieDialog = true },
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
@@ -196,9 +207,12 @@ fun HomeMoviesItem(
                 .crossfade(true)
                 .size(600)
                 .build(),
-            contentDescription = movie.title
+            contentDescription = movie.title,
+            placeholder = painterResource(id = R.drawable.loading_img),
+            error = painterResource(id = R.drawable.ic_broken_image)
         )
     }
+    MovieModal(modifier, showMovieDialog, onDismiss = { showMovieDialog = false }, movie)
 }
 
 @Preview(showBackground = true)
