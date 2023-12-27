@@ -8,6 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.data.repositories.MovieRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -19,12 +22,20 @@ sealed interface MovieUiState {
 
 class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() {
 
+    var isModalMovieVisible by mutableStateOf(false)
+
+
     var movieUiState: MovieUiState by mutableStateOf(MovieUiState.Loading)
         private set
 
     init {
         getRecentlyReleasedMoviesAndPopularSeries()
     }
+
+    fun setModalVisibility(value: Boolean) {
+        isModalMovieVisible = value
+    }
+
 
     private fun getRecentlyReleasedMoviesAndPopularSeries() {
         viewModelScope.launch {

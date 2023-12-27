@@ -1,5 +1,6 @@
 package com.goldbach.absolutecinema.ui.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -32,6 +37,7 @@ import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
 import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.MovieTopAppBar
+import com.goldbach.absolutecinema.ui.components.MovieModal
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.viewmodels.MovieGenreViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.MovieUiState
@@ -102,6 +108,9 @@ fun MovieItem(
     movie: Movie,
     modifier: Modifier = Modifier
 ) {
+    var showModalMovie by remember {
+        mutableStateOf(false)
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -115,7 +124,9 @@ fun MovieItem(
                 .height(minOf(20.dp, 50.dp))
         )
         Card(
-            elevation = CardDefaults.cardElevation(6.dp)
+            elevation = CardDefaults.cardElevation(6.dp),
+            modifier = Modifier
+                .clickable { showModalMovie = true }
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
@@ -127,6 +138,7 @@ fun MovieItem(
                 contentScale = ContentScale.Crop
             )
         }
+        MovieModal(showModal = showModalMovie, onDismiss = { showModalMovie = false }, movie = movie)
     }
 }
 

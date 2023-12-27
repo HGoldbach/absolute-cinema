@@ -1,15 +1,12 @@
 package com.goldbach.absolutecinema.ui.views
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -17,11 +14,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -117,7 +114,10 @@ fun HomeBodyScreen(
                 containerColor = Color.Transparent
             )
         ) {
-            HomeMoviesList(moviesList = moviesList, seriesList = seriesList)
+            HomeMoviesList(
+                moviesList = moviesList,
+                seriesList = seriesList,
+            )
         }
     }
 }
@@ -151,7 +151,9 @@ fun HomeMoviesList(
                     rows = GridCells.Fixed(1)
                 ) {
                     items(items = moviesList, key = { it.id }) { movie ->
-                        HomeMoviesItem(movie = movie)
+                        HomeMoviesItem(
+                            movie = movie,
+                        )
                     }
                 }
             }
@@ -173,7 +175,9 @@ fun HomeMoviesList(
                     rows = GridCells.Fixed(1)
                 ) {
                     items(items = seriesList, key = { it.id }) { series ->
-                        HomeMoviesItem(movie = series)
+                        HomeMoviesItem(
+                            movie = series,
+                        )
                     }
                 }
             }
@@ -186,9 +190,9 @@ fun HomeMoviesList(
 @Composable
 fun HomeMoviesItem(
     movie: Movie,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    var showMovieDialog by remember {
+    var showModalMovie by remember {
         mutableStateOf(false)
     }
     Card(
@@ -197,7 +201,7 @@ fun HomeMoviesItem(
                 vertical = 8.dp,
                 horizontal = 4.dp
             )
-            .clickable { showMovieDialog = true },
+            .clickable { showModalMovie = true },
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
@@ -212,7 +216,11 @@ fun HomeMoviesItem(
             error = painterResource(id = R.drawable.ic_broken_image)
         )
     }
-    MovieModal(modifier, showMovieDialog, onDismiss = { showMovieDialog = false }, movie)
+    MovieModal(
+        showModal = showModalMovie, onDismiss = { showModalMovie = false }, movie = movie
+    )
+
+
 }
 
 @Preview(showBackground = true)
