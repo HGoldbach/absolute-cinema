@@ -28,6 +28,7 @@ fun SerieMenuView(
     navigateUp: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToMovies: () -> Unit,
+    navigateToSearch: () -> Unit,
     navigateToGenreSelected: (Int) -> Unit,
     viewModel: SerieMenuViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -44,6 +45,7 @@ fun SerieMenuView(
             MovieBottomAppBar(
                 navigateToHome = navigateToHome,
                 navigateToMovies = navigateToMovies,
+                navigateToSearch = navigateToSearch,
                 currentlyRoute = SerieMenuDestination.title
             )
         }

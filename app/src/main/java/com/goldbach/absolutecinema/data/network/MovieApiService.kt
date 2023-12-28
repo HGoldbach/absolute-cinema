@@ -43,4 +43,10 @@ interface MovieApiService {
         @Query("api_key") apiKey: String
     ) : Response<MovieDTO>
 
+    // Search
+    @GET("search/multi")
+    suspend fun searchMoviesAndSeries(
+        @Query("query") title: String,
+        @Query("api_key") apiKey: String
+    ) : Response<MovieDTO>
 }

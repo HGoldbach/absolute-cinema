@@ -30,6 +30,7 @@ fun SerieGenreView(
     navigateUp: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToMovies: () -> Unit,
+    navigateToSearch: () -> Unit,
     viewModel: SerieGenreViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState: MovieUiState = viewModel.movieUiState
@@ -46,6 +47,7 @@ fun SerieGenreView(
                 navigateToHome = navigateToHome,
                 navigateToSeries = navigateUp,
                 navigateToMovies = navigateToMovies,
+                navigateToSearch = navigateToSearch,
                 currentlyRoute = SerieGenreDestination.title
             )
         }

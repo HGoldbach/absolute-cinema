@@ -5,13 +5,17 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Theaters
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Theaters
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,6 +35,7 @@ import com.goldbach.absolutecinema.ui.navigation.MovieNavHost
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 import com.goldbach.absolutecinema.ui.views.MovieHomeDestination
 import com.goldbach.absolutecinema.ui.views.MovieMenuDestination
+import com.goldbach.absolutecinema.ui.views.SearchDestination
 import com.goldbach.absolutecinema.ui.views.SerieMenuDestination
 
 data class BottomNavigationItem(
@@ -129,8 +134,8 @@ fun MovieBottomAppBar(
             icon = {
                 Icon(
                     imageVector = if (currentlyRoute == MovieMenuDestination.title) {
-                        Icons.Filled.AccountBox
-                    } else Icons.Outlined.AccountBox,
+                        Icons.Filled.Movie
+                    } else Icons.Outlined.Movie,
                     contentDescription = MovieMenuDestination.title
                 )
             },
@@ -149,8 +154,8 @@ fun MovieBottomAppBar(
             icon = {
                 Icon(
                     imageVector = if (currentlyRoute == SerieMenuDestination.title) {
-                        Icons.Filled.DateRange
-                    } else Icons.Outlined.DateRange,
+                        Icons.Filled.Theaters
+                    } else Icons.Outlined.Theaters,
                     contentDescription = SerieMenuDestination.title
                 )
             },
@@ -162,16 +167,16 @@ fun MovieBottomAppBar(
             }
         )
         NavigationBarItem(
-            selected = currentlyRoute == SerieMenuDestination.title,
+            selected = currentlyRoute == SearchDestination.title,
             onClick = {
                 navigateToSearch()
             },
             icon = {
                 Icon(
-                    imageVector = if (currentlyRoute == SerieMenuDestination.title) {
+                    imageVector = if (currentlyRoute == SearchDestination.title) {
                         Icons.Filled.Search
                     } else Icons.Outlined.Search,
-                    contentDescription = SerieMenuDestination.title
+                    contentDescription = SearchDestination.title
                 )
             },
             label = {

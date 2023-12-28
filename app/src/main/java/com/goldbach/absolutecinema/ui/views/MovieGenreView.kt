@@ -56,6 +56,7 @@ fun MovieGenreView(
     navigateUp: () -> Unit,
     navigateToSeries: () -> Unit,
     navigateToHome: () -> Unit,
+    navigateToSearch: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MovieGenreViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -73,6 +74,7 @@ fun MovieGenreView(
                 navigateToHome = navigateToHome,
                 navigateToMovies = navigateUp,
                 navigateToSeries = navigateToSeries,
+                navigateToSearch = navigateToSearch,
                 currentlyRoute = MovieGenreDestination.title
             )
         }

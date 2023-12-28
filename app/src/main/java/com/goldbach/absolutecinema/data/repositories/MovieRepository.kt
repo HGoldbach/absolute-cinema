@@ -12,6 +12,7 @@ interface MovieRepository {
     suspend fun getPopularSeries(): Response<MovieDTO>
     suspend fun getSeriesByGenre(id: Int): Response<MovieDTO>
     suspend fun getGenres(type: String): Response<GenreDTO>
+    suspend fun getMoviesAndSeriesByTitle(title: String) : Response<MovieDTO>
 
 }
 
@@ -37,5 +38,9 @@ class NetworkMovieRepository(
     override suspend fun getGenres(type: String): Response<GenreDTO> {
         return if (type == "Movie") movieApiService.getMovieGenres(Constants.API_KEY)
         else movieApiService.getSeriesGenres(Constants.API_KEY)
+    }
+
+    override suspend fun getMoviesAndSeriesByTitle(title: String): Response<MovieDTO> {
+        return movieApiService.searchMoviesAndSeries(title, Constants.API_KEY)
     }
 }

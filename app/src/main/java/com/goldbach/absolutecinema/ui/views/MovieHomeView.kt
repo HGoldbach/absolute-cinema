@@ -56,6 +56,7 @@ object MovieHomeDestination : NavigationDestination {
 fun MovieHomeView(
     navigateToMovies: () -> Unit,
     navigateToSeries: () -> Unit,
+    navigateToSearch: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -65,7 +66,7 @@ fun MovieHomeView(
             MovieBottomAppBar(
                 navigateToMovies = navigateToMovies,
                 navigateToSeries = navigateToSeries,
-                navigateToSearch = { /*TODO*/ },
+                navigateToSearch = navigateToSearch,
                 currentlyRoute = MovieHomeDestination.title
             )
         }
@@ -227,6 +228,6 @@ fun HomeMoviesItem(
 @Composable
 fun MovieHomeViewPreview() {
     AbsoluteCinemaTheme {
-        MovieHomeView({}, {})
+        MovieHomeView({}, {}, {})
     }
 }
