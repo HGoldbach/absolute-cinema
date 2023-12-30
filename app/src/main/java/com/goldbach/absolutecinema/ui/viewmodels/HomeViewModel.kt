@@ -7,20 +7,24 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.goldbach.absolutecinema.data.dto.MovieDto
+import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.data.repositories.MovieApiRepository
+import com.goldbach.absolutecinema.data.repositories.MovieDbRepository
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 sealed interface MovieUiState {
-    data class Success(val movies: List<MovieDto>, val series: List<MovieDto> = emptyList()) : MovieUiState
+    data class Success(val movies: List<MovieDto>, val series: List<MovieDto> = emptyList()) :
+        MovieUiState
+
     object Error : MovieUiState
     object Loading : MovieUiState
 }
 
-class HomeViewModel(private val movieRepository: MovieApiRepository) : ViewModel() {
-
-    var isModalMovieVisible by mutableStateOf(false)
-
+class HomeViewModel(
+    private val movieRepository: MovieApiRepository,
+    private val movieDbRepository: MovieDbRepository
+) : ViewModel() {
 
     var movieUiState: MovieUiState by mutableStateOf(MovieUiState.Loading)
         private set
@@ -28,11 +32,6 @@ class HomeViewModel(private val movieRepository: MovieApiRepository) : ViewModel
     init {
         getRecentlyReleasedMoviesAndPopularSeries()
     }
-
-    fun setModalVisibility(value: Boolean) {
-        isModalMovieVisible = value
-    }
-
 
     private fun getRecentlyReleasedMoviesAndPopularSeries() {
         viewModelScope.launch {
@@ -48,6 +47,20 @@ class HomeViewModel(private val movieRepository: MovieApiRepository) : ViewModel
                 MovieUiState.Error
             }
         }
+    }
+
+    suspend fun saveMovie(movie: MovieDto) {
+        movieDbRepository.insertMovie(movieDtoToMovie(movie))
+    }
+
+    fun movieDtoToMovie(movie: MovieDto): Movie {
+        return Movie(
+            0,
+            title = movie.title,
+            description = movie.description,
+            poster = movie.poster,
+            releaseDate = movie.releaseDate
+        )
     }
 
 }

@@ -39,6 +39,7 @@ import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 @Composable
 fun SuccessCatalogGrid(
     movieList: List<MovieDto>,
+    onSaveClick: (MovieDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -49,6 +50,7 @@ fun SuccessCatalogGrid(
         items(movieList, key = { it.id }) { movie ->
             MovieItem(
                 movie = movie,
+                onSaveClick = onSaveClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .size(125.dp, 300.dp)
@@ -60,6 +62,7 @@ fun SuccessCatalogGrid(
 @Composable
 fun MovieItem(
     movie: MovieDto,
+    onSaveClick: (MovieDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showModalMovie by remember {
@@ -98,7 +101,8 @@ fun MovieItem(
         MovieModal(
             showModal = showModalMovie,
             onDismiss = { showModalMovie = false },
-            movie = movie
+            onSave = onSaveClick,
+            movie = movie,
         )
     }
 }
@@ -145,7 +149,7 @@ fun LoadingCatalog(
 fun SuccessCatalogGridPreview() {
     AbsoluteCinemaTheme {
         val mockData = List(10) { MovieDto("$it", "", "", "", "") }
-        SuccessCatalogGrid(movieList = mockData)
+        SuccessCatalogGrid(movieList = mockData, {})
     }
 }
 

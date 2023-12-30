@@ -7,17 +7,18 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.goldbach.absolutecinema.MovieApplication
 import com.goldbach.absolutecinema.ui.viewmodels.HomeViewModel
-import com.goldbach.absolutecinema.ui.viewmodels.MovieGenreViewModel
+import com.goldbach.absolutecinema.ui.viewmodels.MovieCatalogViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.MovieMenuViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.SearchViewModel
-import com.goldbach.absolutecinema.ui.viewmodels.SerieGenreViewModel
+import com.goldbach.absolutecinema.ui.viewmodels.SerieCatalogViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.SerieMenuViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             HomeViewModel(
-                movieApplication().container.movieApiRepository
+                movieApplication().container.movieApiRepository,
+                movieApplication().container.movieDbRepository
             )
         }
         initializer {
@@ -26,9 +27,10 @@ object AppViewModelProvider {
             )
         }
         initializer {
-            MovieGenreViewModel(
+            MovieCatalogViewModel(
                 this.createSavedStateHandle(),
-                movieApplication().container.movieApiRepository
+                movieApplication().container.movieApiRepository,
+                movieApplication().container.movieDbRepository
             )
         }
         initializer {
@@ -37,14 +39,16 @@ object AppViewModelProvider {
             )
         }
         initializer {
-            SerieGenreViewModel(
+            SerieCatalogViewModel(
                 this.createSavedStateHandle(),
-                movieApplication().container.movieApiRepository
+                movieApplication().container.movieApiRepository,
+                movieApplication().container.movieDbRepository
             )
         }
         initializer {
             SearchViewModel(
-                movieApplication().container.movieApiRepository
+                movieApplication().container.movieApiRepository,
+                movieApplication().container.movieDbRepository
             )
         }
     }

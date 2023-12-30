@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +50,7 @@ import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 import com.goldbach.absolutecinema.ui.viewmodels.HomeViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.MovieUiState
+import kotlinx.coroutines.launch
 
 object MovieHomeDestination : NavigationDestination {
     override val route = "movie_home"
@@ -64,6 +66,7 @@ fun MovieHomeView(
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val movieUiState: MovieUiState = viewModel.movieUiState
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         bottomBar = {
             MovieBottomAppBar(
@@ -91,6 +94,11 @@ fun MovieHomeView(
             is MovieUiState.Success -> HomeBodyScreen(
                 moviesList = movieUiState.movies,
                 seriesList = movieUiState.series,
+                onSaveClick = {
+                    coroutineScope.launch {
+                        viewModel.saveMovie(it)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxSize()
             )
@@ -102,6 +110,7 @@ fun MovieHomeView(
 fun HomeBodyScreen(
     moviesList: List<MovieDto>,
     seriesList: List<MovieDto>,
+    onSaveClick: (MovieDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -126,6 +135,7 @@ fun HomeBodyScreen(
             HomeMoviesList(
                 moviesList = moviesList,
                 seriesList = seriesList,
+                onSaveClick = onSaveClick
             )
         }
     }
@@ -135,6 +145,7 @@ fun HomeBodyScreen(
 fun HomeMoviesList(
     moviesList: List<MovieDto>,
     seriesList: List<MovieDto>,
+    onSaveClick: (MovieDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -162,6 +173,7 @@ fun HomeMoviesList(
                     items(items = moviesList, key = { it.id }) { movie ->
                         HomeMoviesItem(
                             movie = movie,
+                            onSaveClick = onSaveClick,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .size(125.dp)
@@ -189,6 +201,7 @@ fun HomeMoviesList(
                     items(items = seriesList, key = { it.id }) { series ->
                         HomeMoviesItem(
                             movie = series,
+                            onSaveClick = onSaveClick,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .size(125.dp)
@@ -205,6 +218,7 @@ fun HomeMoviesList(
 @Composable
 fun HomeMoviesItem(
     movie: MovieDto,
+    onSaveClick: (MovieDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showModalMovie by remember {
@@ -234,7 +248,10 @@ fun HomeMoviesItem(
         )
     }
     MovieModal(
-        showModal = showModalMovie, onDismiss = { showModalMovie = false }, movie = movie
+        showModal = showModalMovie,
+        onDismiss = { showModalMovie = false },
+        onSave = onSaveClick,
+        movie = movie
     )
 
 
@@ -245,6 +262,6 @@ fun HomeMoviesItem(
 fun HomeMoviesListPreview() {
     AbsoluteCinemaTheme {
         val mockData = List(10) { MovieDto("$it", "", "", "", "") }
-        HomeMoviesList(moviesList = mockData, seriesList = mockData)
+        HomeMoviesList(moviesList = mockData, seriesList = mockData, {})
     }
 }

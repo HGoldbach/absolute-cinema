@@ -3,12 +3,17 @@ package com.goldbach.absolutecinema.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.goldbach.absolutecinema.data.dto.MovieDto
+import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.data.repositories.MovieApiRepository
+import com.goldbach.absolutecinema.data.repositories.MovieDbRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SearchViewModel(private val movieRepository: MovieApiRepository) : ViewModel() {
+class SearchViewModel(
+    private val movieRepository: MovieApiRepository,
+    private val movieDbRepository: MovieDbRepository
+) : ViewModel() {
 
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
@@ -38,6 +43,20 @@ class SearchViewModel(private val movieRepository: MovieApiRepository) : ViewMod
 
     fun changeActiveSearch() {
         _isActiveSearch.value = !_isActiveSearch.value
+    }
+
+    suspend fun saveMovie(movie: MovieDto) {
+        movieDbRepository.insertMovie(movieDtoToMovie(movie))
+    }
+
+    fun movieDtoToMovie(movie: MovieDto): Movie {
+        return Movie(
+            0,
+            title = movie.title,
+            description = movie.description,
+            poster = movie.poster,
+            releaseDate = movie.releaseDate
+        )
     }
 
 }

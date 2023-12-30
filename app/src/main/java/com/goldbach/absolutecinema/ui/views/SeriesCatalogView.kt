@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
@@ -15,7 +16,8 @@ import com.goldbach.absolutecinema.ui.components.LoadingCatalog
 import com.goldbach.absolutecinema.ui.components.SuccessCatalogGrid
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.viewmodels.MovieUiState
-import com.goldbach.absolutecinema.ui.viewmodels.SerieGenreViewModel
+import com.goldbach.absolutecinema.ui.viewmodels.SerieCatalogViewModel
+import kotlinx.coroutines.launch
 
 object SerieGenreDestination : NavigationDestination {
     override val route = "serie_genre"
@@ -33,9 +35,10 @@ fun SerieGenreView(
     navigateToHome: () -> Unit,
     navigateToMovies: () -> Unit,
     navigateToSearch: () -> Unit,
-    viewModel: SerieGenreViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: SerieCatalogViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState: MovieUiState = viewModel.movieUiState
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             MovieTopAppBar(
@@ -70,6 +73,11 @@ fun SerieGenreView(
 
             is MovieUiState.Success -> SuccessCatalogGrid(
                 movieList = uiState.movies,
+                onSaveClick = {
+                              coroutineScope.launch {
+                                  viewModel.saveMovie(it)
+                              }
+                },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(it)

@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.components.MovieItem
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.viewmodels.SearchViewModel
+import kotlinx.coroutines.launch
 
 object SearchDestination : NavigationDestination {
     override val route = "search"
@@ -50,6 +52,7 @@ fun SearchView(
     val isActiveSearch by viewModel.isActiveSearch.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
     val movies by viewModel.results.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         bottomBar = {
             MovieBottomAppBar(
@@ -112,11 +115,20 @@ fun SearchView(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(
+                        horizontal =  20.dp,
+                        vertical = 5.dp
+                    )
             ) {
                 items(items = movies) { movie ->
                     if(movie.description != null) {
                         MovieItem(
-                            movie = movie
+                            movie = movie,
+                            onSaveClick = {
+                                coroutineScope.launch {
+                                    viewModel.saveMovie(it)
+                                }
+                            }
                         )
                     }
                 }

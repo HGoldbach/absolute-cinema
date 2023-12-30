@@ -41,6 +41,7 @@ fun MovieModal(
     modifier: Modifier = Modifier,
     showModal: Boolean = false,
     onDismiss: () -> Unit,
+    onSave: (MovieDto) -> Unit,
     movie: MovieDto
 ) {
     if (showModal) {
@@ -56,7 +57,7 @@ fun MovieModal(
                 elevation = CardDefaults.cardElevation(8.dp),
                 shape = RoundedCornerShape(4.dp)
             ) {
-                MovieModalBody(movie = movie, onClosePressed = onDismiss)
+                MovieModalBody(movie = movie, onClosePressed = onDismiss, onSave = onSave)
             }
         }
     }
@@ -65,6 +66,7 @@ fun MovieModal(
 @Composable
 fun MovieModalBody(
     movie: MovieDto,
+    onSave: (MovieDto) -> Unit,
     onClosePressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -76,7 +78,7 @@ fun MovieModalBody(
     ) {
         MovieModalDetails(movie = movie, onClosePressed = onClosePressed)
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { onSave(movie) },
             shape = RoundedCornerShape(5.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -153,6 +155,8 @@ fun MovieModalPreview() {
         MovieModal(
             showModal = true,
             movie = MovieDto("1", "Aquaman", "Some text", "", ""),
-            onDismiss = {})
+            onDismiss = {},
+            onSave = {}
+        )
     }
 }
