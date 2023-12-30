@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.goldbach.absolutecinema.data.repositories.MovieRepository
+import com.goldbach.absolutecinema.data.repositories.MovieApiRepository
 import com.goldbach.absolutecinema.ui.views.SerieGenreDestination
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -14,7 +14,7 @@ import java.io.IOException
 
 class SerieGenreViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val movieRepository: MovieRepository
+    private val movieRepository: MovieApiRepository
 ) : ViewModel() {
 
     private val genreId: Int = checkNotNull(savedStateHandle[SerieGenreDestination.genreIdArg])

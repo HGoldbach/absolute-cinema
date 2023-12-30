@@ -1,8 +1,8 @@
-package com.goldbach.absolutecinema.data.models
+package com.goldbach.absolutecinema.data.dto
 
 import kotlinx.serialization.SerialName
 
-data class Genre(
+data class GenreDto(
     @SerialName("id")
     val id: Int,
     @SerialName("name")

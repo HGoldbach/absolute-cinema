@@ -33,12 +33,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.goldbach.absolutecinema.R
 import com.goldbach.absolutecinema.data.Constants
-import com.goldbach.absolutecinema.data.models.Movie
+import com.goldbach.absolutecinema.data.dto.MovieDto
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 
 @Composable
 fun SuccessCatalogGrid(
-    movieList: List<Movie>,
+    movieList: List<MovieDto>,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -59,7 +59,7 @@ fun SuccessCatalogGrid(
 
 @Composable
 fun MovieItem(
-    movie: Movie,
+    movie: MovieDto,
     modifier: Modifier = Modifier
 ) {
     var showModalMovie by remember {
@@ -144,7 +144,7 @@ fun LoadingCatalog(
 @Composable
 fun SuccessCatalogGridPreview() {
     AbsoluteCinemaTheme {
-        val mockData = List(10) { Movie("$it", "", "", "", "") }
+        val mockData = List(10) { MovieDto("$it", "", "", "", "") }
         SuccessCatalogGrid(movieList = mockData)
     }
 }

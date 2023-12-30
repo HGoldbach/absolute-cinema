@@ -25,12 +25,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.goldbach.absolutecinema.R
-import com.goldbach.absolutecinema.data.models.Genre
+import com.goldbach.absolutecinema.data.dto.GenreDto
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 
 @Composable
 fun SuccessGenreGrid(
-    genres: List<Genre>,
+    genres: List<GenreDto>,
     navigateToGenreSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -53,8 +53,8 @@ fun SuccessGenreGrid(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenreItem(
-    genre: Genre,
-    onItemClick: (Genre) -> Unit,
+    genre: GenreDto,
+    onItemClick: (GenreDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -121,7 +121,7 @@ fun LoadingGenre(
 fun SuccessGenreGridPreview() {
     AbsoluteCinemaTheme {
         SuccessGenreGrid(
-            genres = listOf(Genre(1, "Horror"), Genre(2, "Thriller")),
+            genres = listOf(GenreDto(1, "Horror"), GenreDto(2, "Thriller")),
             navigateToGenreSelected = {}
         )
     }
@@ -131,7 +131,7 @@ fun SuccessGenreGridPreview() {
 @Composable
 fun GenreItemPreview() {
     AbsoluteCinemaTheme {
-        GenreItem(genre = Genre(1, "Western"), onItemClick = {})
+        GenreItem(genre = GenreDto(1, "Western"), onItemClick = {})
     }
 }
 

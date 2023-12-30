@@ -1,21 +1,22 @@
 package com.goldbach.absolutecinema.data
 
+import android.content.Context
+import com.goldbach.absolutecinema.data.database.MovieDatabase
 import com.goldbach.absolutecinema.data.network.MovieApiService
-import com.goldbach.absolutecinema.data.repositories.MovieRepository
+import com.goldbach.absolutecinema.data.repositories.MovieApiRepository
+import com.goldbach.absolutecinema.data.repositories.MovieDbRepository
 import com.goldbach.absolutecinema.data.repositories.NetworkMovieRepository
+import com.goldbach.absolutecinema.data.repositories.OfflineMovieDbRepository
 import com.google.gson.GsonBuilder
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 interface AppContainer {
-    val movieRepository: MovieRepository
+    val movieApiRepository: MovieApiRepository
+    val movieDbRepository: MovieDbRepository
 }
 
-class DefaultAppContainer : AppContainer {
+class DefaultAppContainer(private val context: Context) : AppContainer {
 
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(Constants.BASE_URL)
@@ -26,7 +27,11 @@ class DefaultAppContainer : AppContainer {
         retrofit.create(MovieApiService::class.java)
     }
 
-    override val movieRepository: MovieRepository by lazy {
+    override val movieApiRepository: MovieApiRepository by lazy {
         NetworkMovieRepository(retrofitService)
+    }
+
+    override val movieDbRepository: MovieDbRepository by lazy {
+        OfflineMovieDbRepository(MovieDatabase.getDatabase(context).MovieDao())
     }
 }

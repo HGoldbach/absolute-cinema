@@ -6,21 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.goldbach.absolutecinema.data.models.Movie
-import com.goldbach.absolutecinema.data.repositories.MovieRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.goldbach.absolutecinema.data.dto.MovieDto
+import com.goldbach.absolutecinema.data.repositories.MovieApiRepository
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 sealed interface MovieUiState {
-    data class Success(val movies: List<Movie>, val series: List<Movie> = emptyList()) : MovieUiState
+    data class Success(val movies: List<MovieDto>, val series: List<MovieDto> = emptyList()) : MovieUiState
     object Error : MovieUiState
     object Loading : MovieUiState
 }
 
-class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() {
+class HomeViewModel(private val movieRepository: MovieApiRepository) : ViewModel() {
 
     var isModalMovieVisible by mutableStateOf(false)
 

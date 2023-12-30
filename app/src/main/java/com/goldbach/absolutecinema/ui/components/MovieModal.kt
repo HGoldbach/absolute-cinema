@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -32,7 +33,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.goldbach.absolutecinema.R
 import com.goldbach.absolutecinema.data.Constants
-import com.goldbach.absolutecinema.data.models.Movie
+import com.goldbach.absolutecinema.data.dto.MovieDto
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 
 @Composable
@@ -40,7 +41,7 @@ fun MovieModal(
     modifier: Modifier = Modifier,
     showModal: Boolean = false,
     onDismiss: () -> Unit,
-    movie: Movie
+    movie: MovieDto
 ) {
     if (showModal) {
         Dialog(
@@ -63,7 +64,7 @@ fun MovieModal(
 
 @Composable
 fun MovieModalBody(
-    movie: Movie,
+    movie: MovieDto,
     onClosePressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -74,13 +75,22 @@ fun MovieModalBody(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MovieModalDetails(movie = movie, onClosePressed = onClosePressed)
-
+        Button(
+            onClick = { /*TODO*/ },
+            shape = RoundedCornerShape(5.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+           Text(
+               text = "Add to list",
+               style = MaterialTheme.typography.labelSmall
+           )
+        }
     }
 }
 
 @Composable
 fun MovieModalDetails(
-    movie: Movie,
+    movie: MovieDto,
     onClosePressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -117,8 +127,8 @@ fun MovieModalDetails(
             contentDescription = movie.title,
             placeholder = painterResource(id = R.drawable.loading_img),
             error = painterResource(id = R.drawable.ic_broken_image),
-            modifier = Modifier
-                .width(250.dp)
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.size(300.dp, 300.dp)
         )
     }
     Text(
@@ -142,7 +152,7 @@ fun MovieModalPreview() {
     AbsoluteCinemaTheme {
         MovieModal(
             showModal = true,
-            movie = Movie("1", "Aquaman", "Some text", "", ""),
+            movie = MovieDto("1", "Aquaman", "Some text", "", ""),
             onDismiss = {})
     }
 }

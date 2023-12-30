@@ -1,16 +1,21 @@
 package com.goldbach.absolutecinema.data.models
 
-import com.google.gson.annotations.SerializedName
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "Movie", indices = [Index(value = ["title"], unique = true)])
 data class Movie(
-    @SerializedName("id")
-    var id: String,
-    @SerializedName("original_title", alternate = ["original_name"])
-    var title: String,
-    @SerializedName("overview")
-    var description: String,
-    @SerializedName("poster_path")
-    var poster: String,
-    @SerializedName("release_date", alternate = ["first_air_date"])
-    var releaseDate: String
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo("id")
+    val id: Int,
+    @ColumnInfo("title")
+    val title: String,
+    @ColumnInfo("description")
+    val description: String,
+    @ColumnInfo("poster")
+    val poster: String,
+    @ColumnInfo("release_date")
+    val releaseDate: String
 )

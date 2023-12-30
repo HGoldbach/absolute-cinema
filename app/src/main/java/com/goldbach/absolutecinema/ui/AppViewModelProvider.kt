@@ -17,34 +17,34 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             HomeViewModel(
-                movieApplication().container.movieRepository
+                movieApplication().container.movieApiRepository
             )
         }
         initializer {
             MovieMenuViewModel(
-                movieApplication().container.movieRepository
+                movieApplication().container.movieApiRepository
             )
         }
         initializer {
             MovieGenreViewModel(
                 this.createSavedStateHandle(),
-                movieApplication().container.movieRepository
+                movieApplication().container.movieApiRepository
             )
         }
         initializer {
             SerieMenuViewModel(
-                movieApplication().container.movieRepository
+                movieApplication().container.movieApiRepository
             )
         }
         initializer {
             SerieGenreViewModel(
                 this.createSavedStateHandle(),
-                movieApplication().container.movieRepository
+                movieApplication().container.movieApiRepository
             )
         }
         initializer {
             SearchViewModel(
-                movieApplication().container.movieRepository
+                movieApplication().container.movieApiRepository
             )
         }
     }

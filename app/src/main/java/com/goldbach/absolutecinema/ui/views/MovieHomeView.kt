@@ -3,7 +3,6 @@ package com.goldbach.absolutecinema.ui.views
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +39,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.goldbach.absolutecinema.R
 import com.goldbach.absolutecinema.data.Constants
-import com.goldbach.absolutecinema.data.models.Movie
+import com.goldbach.absolutecinema.data.dto.MovieDto
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
 import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.components.ErrorGenre
@@ -102,8 +100,8 @@ fun MovieHomeView(
 
 @Composable
 fun HomeBodyScreen(
-    moviesList: List<Movie>,
-    seriesList: List<Movie>,
+    moviesList: List<MovieDto>,
+    seriesList: List<MovieDto>,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -135,8 +133,8 @@ fun HomeBodyScreen(
 
 @Composable
 fun HomeMoviesList(
-    moviesList: List<Movie>,
-    seriesList: List<Movie>,
+    moviesList: List<MovieDto>,
+    seriesList: List<MovieDto>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -206,7 +204,7 @@ fun HomeMoviesList(
 
 @Composable
 fun HomeMoviesItem(
-    movie: Movie,
+    movie: MovieDto,
     modifier: Modifier = Modifier,
 ) {
     var showModalMovie by remember {
@@ -246,7 +244,7 @@ fun HomeMoviesItem(
 @Composable
 fun HomeMoviesListPreview() {
     AbsoluteCinemaTheme {
-        val mockData = List(10) { Movie("$it", "", "", "", "") }
+        val mockData = List(10) { MovieDto("$it", "", "", "", "") }
         HomeMoviesList(moviesList = mockData, seriesList = mockData)
     }
 }

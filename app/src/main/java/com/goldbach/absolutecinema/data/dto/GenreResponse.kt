@@ -1,9 +1,8 @@
 package com.goldbach.absolutecinema.data.dto
 
-import com.goldbach.absolutecinema.data.models.Genre
 import kotlinx.serialization.SerialName
 
-data class GenreDTO(
+data class GenreResponse(
     @SerialName("genres")
-    val genres: List<Genre>
+    val genres: List<GenreDto>
 )

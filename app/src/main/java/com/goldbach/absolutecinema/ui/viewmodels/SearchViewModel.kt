@@ -1,24 +1,14 @@
 package com.goldbach.absolutecinema.ui.viewmodels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.goldbach.absolutecinema.data.models.Movie
-import com.goldbach.absolutecinema.data.repositories.MovieRepository
+import com.goldbach.absolutecinema.data.dto.MovieDto
+import com.goldbach.absolutecinema.data.repositories.MovieApiRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 
-class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel() {
+class SearchViewModel(private val movieRepository: MovieApiRepository) : ViewModel() {
 
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
@@ -29,7 +19,7 @@ class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel(
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
 
-    private val _results = MutableStateFlow(emptyList<Movie>())
+    private val _results = MutableStateFlow(emptyList<MovieDto>())
     val results = _results.asStateFlow()
 
     fun searchMovies(title: String) {

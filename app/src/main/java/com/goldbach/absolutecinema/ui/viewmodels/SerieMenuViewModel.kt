@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.goldbach.absolutecinema.data.repositories.MovieRepository
+import com.goldbach.absolutecinema.data.repositories.MovieApiRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-class SerieMenuViewModel(private val movieRepository: MovieRepository) : ViewModel() {
+class SerieMenuViewModel(private val movieRepository: MovieApiRepository) : ViewModel() {
 
     var menuUiState: MenuUiState by mutableStateOf(MenuUiState.Loading)
         private set
