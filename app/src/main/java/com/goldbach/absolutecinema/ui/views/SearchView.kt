@@ -3,17 +3,12 @@ package com.goldbach.absolutecinema.ui.views
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -23,27 +18,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.goldbach.absolutecinema.R
-import com.goldbach.absolutecinema.data.Constants
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
 import com.goldbach.absolutecinema.ui.MovieBottomAppBar
+import com.goldbach.absolutecinema.ui.components.MovieItem
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
-import com.goldbach.absolutecinema.ui.viewmodels.MovieUiState
 import com.goldbach.absolutecinema.ui.viewmodels.SearchViewModel
 
 object SearchDestination : NavigationDestination {
@@ -63,7 +50,6 @@ fun SearchView(
     val isActiveSearch by viewModel.isActiveSearch.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
     val movies by viewModel.results.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
     Scaffold(
         bottomBar = {
             MovieBottomAppBar(
@@ -128,36 +114,14 @@ fun SearchView(
                     .fillMaxWidth()
             ) {
                 items(items = movies) { movie ->
-                   MovieItem(movie = movie) 
+                    if(movie.description != null) {
+                        MovieItem(
+                            movie = movie
+                        )
+                    }
                 }
             }
         }
-
-
-        /*
-        when(uiState) {
-            is MovieUiState.Loading -> MenuLoadingScreen(modifier = Modifier.padding(it))
-            is MovieUiState.Error -> MenuErrorScreen(modifier = Modifier.padding(it))
-            is MovieUiState.Success -> SearchViewBody()
-
-            is MovieUiState.Success -> GenreSuccessScreen(
-                movieList = uiState.movies,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            )
-
-
-        }
-
-
-        SearchViewBody(
-            modifier = Modifier.padding(it)
-        )
-
-
-         */
-
     }
 }
 

@@ -29,7 +29,7 @@ class MovieMenuViewModel(private val movieRepository: MovieRepository) : ViewMod
         getGenres()
     }
 
-    private fun getGenres() {
+    fun getGenres() {
         viewModelScope.launch {
             movieUiState = MenuUiState.Loading
             movieUiState = try {

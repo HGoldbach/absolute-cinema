@@ -3,10 +3,12 @@ package com.goldbach.absolutecinema.ui.views
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -26,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -41,6 +44,8 @@ import com.goldbach.absolutecinema.data.Constants
 import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
 import com.goldbach.absolutecinema.ui.MovieBottomAppBar
+import com.goldbach.absolutecinema.ui.components.ErrorGenre
+import com.goldbach.absolutecinema.ui.components.LoadingGenre
 import com.goldbach.absolutecinema.ui.components.MovieModal
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
@@ -72,12 +77,17 @@ fun MovieHomeView(
         }
     ) {
         when (movieUiState) {
-            is MovieUiState.Loading -> MenuLoadingScreen(
-                modifier = Modifier.padding(it)
+            is MovieUiState.Loading -> LoadingGenre(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
             )
 
-            is MovieUiState.Error -> MenuErrorScreen(
-                modifier = Modifier.padding(it)
+            is MovieUiState.Error -> ErrorGenre(
+                retryAction = {},
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
             )
 
             is MovieUiState.Success -> HomeBodyScreen(
@@ -154,6 +164,9 @@ fun HomeMoviesList(
                     items(items = moviesList, key = { it.id }) { movie ->
                         HomeMoviesItem(
                             movie = movie,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .size(125.dp)
                         )
                     }
                 }
@@ -178,6 +191,9 @@ fun HomeMoviesList(
                     items(items = seriesList, key = { it.id }) { series ->
                         HomeMoviesItem(
                             movie = series,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .size(125.dp)
                         )
                     }
                 }
@@ -210,11 +226,13 @@ fun HomeMoviesItem(
             model = ImageRequest.Builder(context = LocalContext.current)
                 .data(Constants.BASE_URL_IMAGE + movie.poster)
                 .crossfade(true)
-                .size(600)
                 .build(),
             contentDescription = movie.title,
             placeholder = painterResource(id = R.drawable.loading_img),
-            error = painterResource(id = R.drawable.ic_broken_image)
+            error = painterResource(id = R.drawable.ic_broken_image),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
         )
     }
     MovieModal(
@@ -226,8 +244,9 @@ fun HomeMoviesItem(
 
 @Preview(showBackground = true)
 @Composable
-fun MovieHomeViewPreview() {
+fun HomeMoviesListPreview() {
     AbsoluteCinemaTheme {
-        MovieHomeView({}, {}, {})
+        val mockData = List(10) { Movie("$it", "", "", "", "") }
+        HomeMoviesList(moviesList = mockData, seriesList = mockData)
     }
 }

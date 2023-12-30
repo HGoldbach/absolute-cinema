@@ -27,6 +27,9 @@ import com.goldbach.absolutecinema.data.models.Genre
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
 import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.MovieTopAppBar
+import com.goldbach.absolutecinema.ui.components.ErrorGenre
+import com.goldbach.absolutecinema.ui.components.LoadingGenre
+import com.goldbach.absolutecinema.ui.components.SuccessGenreGrid
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 import com.goldbach.absolutecinema.ui.viewmodels.MenuUiState
@@ -61,18 +64,27 @@ fun MovieMenuView(
         bottomBar = {
             MovieBottomAppBar(
                 navigateToHome = navigateToHome,
-                navigateToSeries =  navigateToSeries,
+                navigateToSeries = navigateToSeries,
                 navigateToSearch = navigateToSearch,
                 currentlyRoute = MovieMenuDestination.title
             )
         }
     ) {
-        when(menuUiState) {
-            is MenuUiState.Loading -> MenuLoadingScreen(modifier = Modifier
-                .fillMaxSize()
-                .padding(it))
-            is MenuUiState.Error -> MenuErrorScreen(modifier = Modifier.padding(it))
-            is MenuUiState.Success -> MenuSuccessScreen(
+        when (menuUiState) {
+            is MenuUiState.Loading -> LoadingGenre(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            )
+
+            is MenuUiState.Error -> ErrorGenre(
+                retryAction = viewModel::getGenres,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            )
+
+            is MenuUiState.Success -> SuccessGenreGrid(
                 menuUiState.genres,
                 navigateToGenreSelected = navigateToGenreSelected,
                 modifier = Modifier
@@ -81,83 +93,4 @@ fun MovieMenuView(
             )
         }
     }
-}
-
-@Composable
-fun MenuSuccessScreen(
-    genres: List<Genre>,
-    navigateToGenreSelected: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = modifier
-            .padding(dimensionResource(id = R.dimen.padding_medium))
-    ) {
-        items(genres) { genre ->
-            MenuGenreItem(
-                genre = genre,
-                modifier = Modifier,
-                onItemClick = { navigateToGenreSelected(genre.id) }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MenuGenreItem(
-    genre: Genre,
-    onItemClick: (Genre) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .padding(dimensionResource(id = R.dimen.padding_small)),
-        elevation = CardDefaults.cardElevation(4.dp),
-        shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onTertiary
-        ),
-        onClick = { onItemClick(genre) }
-    ) {
-        Text(
-            text = genre.name,
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.padding_medium))
-                .fillMaxWidth(),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.tertiary,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MenuSuccessScreenPreview() {
-    AbsoluteCinemaTheme {
-        MenuSuccessScreen(genres = listOf(
-            Genre(0, "Drama"),
-            Genre(0, "Family"),
-            Genre(0, "Fantasy"),
-            Genre(0, "History"),
-            Genre(0, "Horror"),
-            Genre(0, "War")
-        ), {})
-    }
-}
-
-@Composable
-fun MenuLoadingScreen(
-    modifier: Modifier = Modifier
-) {
-
-}
-
-@Composable
-fun MenuErrorScreen(
-    modifier: Modifier = Modifier
-) {
-
 }

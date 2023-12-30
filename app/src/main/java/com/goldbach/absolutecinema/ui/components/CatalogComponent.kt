@@ -1,20 +1,20 @@
-package com.goldbach.absolutecinema.ui.views
+package com.goldbach.absolutecinema.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,71 +26,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import coil.size.Scale
 import com.goldbach.absolutecinema.R
 import com.goldbach.absolutecinema.data.Constants
 import com.goldbach.absolutecinema.data.models.Movie
-import com.goldbach.absolutecinema.ui.AppViewModelProvider
-import com.goldbach.absolutecinema.ui.MovieBottomAppBar
-import com.goldbach.absolutecinema.ui.MovieTopAppBar
-import com.goldbach.absolutecinema.ui.components.MovieModal
-import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
-import com.goldbach.absolutecinema.ui.viewmodels.MovieGenreViewModel
-import com.goldbach.absolutecinema.ui.viewmodels.MovieUiState
-
-object MovieGenreDestination : NavigationDestination {
-    override val route = "movie"
-    override val title = "Movies by Genre"
-    const val genreIdArg = "genreId"
-    val routeWithArgs = "${route}/{${genreIdArg}}"
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MovieGenreView(
-    canNavigateBack: Boolean = true,
-    navigateUp: () -> Unit,
-    navigateToSeries: () -> Unit,
-    navigateToHome: () -> Unit,
-    navigateToSearch: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: MovieGenreViewModel = viewModel(factory = AppViewModelProvider.Factory)
-) {
-    val uiState = viewModel.movieUiState
-    Scaffold(
-        topBar = {
-            MovieTopAppBar(
-                title = MovieGenreDestination.title,
-                canNavigateBack = canNavigateBack,
-                navigateUp = navigateUp
-            )
-        },
-        bottomBar = {
-            MovieBottomAppBar(
-                navigateToHome = navigateToHome,
-                navigateToMovies = navigateUp,
-                navigateToSeries = navigateToSeries,
-                navigateToSearch = navigateToSearch,
-                currentlyRoute = MovieGenreDestination.title
-            )
-        }
-    ) {
-        when(uiState) {
-            is MovieUiState.Loading -> GenreLoadingScreen(modifier = Modifier.fillMaxSize())
-            is MovieUiState.Error -> GenreErrorScreen(modifier = Modifier.fillMaxSize())
-            is MovieUiState.Success -> GenreSuccessScreen(movieList = uiState.movies, modifier = Modifier
-                .fillMaxSize()
-                .padding(it))
-        }
-    }
-}
+import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 
 @Composable
-fun GenreSuccessScreen(
+fun SuccessCatalogGrid(
     movieList: List<Movie>,
     modifier: Modifier = Modifier
 ) {
@@ -100,7 +47,12 @@ fun GenreSuccessScreen(
             .padding(20.dp)
     ) {
         items(movieList, key = { it.id }) { movie ->
-            MovieItem(movie = movie)
+            MovieItem(
+                movie = movie,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(125.dp, 300.dp)
+            )
         }
     }
 }
@@ -134,26 +86,81 @@ fun MovieItem(
                 model = ImageRequest.Builder(context = LocalContext.current)
                     .data(Constants.BASE_URL_IMAGE + movie.poster)
                     .crossfade(true)
-                    .size(700)
+                    .size(125, 200)
                     .build(),
                 contentDescription = "",
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.loading_img),
+                error = painterResource(id = R.drawable.ic_broken_image),
+                modifier = Modifier.fillMaxWidth()
             )
         }
-        MovieModal(showModal = showModalMovie, onDismiss = { showModalMovie = false }, movie = movie)
+        MovieModal(
+            showModal = showModalMovie,
+            onDismiss = { showModalMovie = false },
+            movie = movie
+        )
     }
 }
 
 @Composable
-fun GenreLoadingScreen(
+fun ErrorCatalog(
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_connection_error),
+            contentDescription = ""
+        )
+        Text(
+            text = "Failed to load",
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+        )
+        Button(onClick = retryAction) {
+            Text(text = "Retry")
+        }
+    }
 }
 
 @Composable
-fun GenreErrorScreen(
+fun LoadingCatalog(
     modifier: Modifier = Modifier
 ) {
+    Image(
+        modifier = modifier.size(200.dp),
+        painter = painterResource(id = R.drawable.loading_img),
+        contentDescription = ""
+    )
+}
 
+
+// Previews
+@Preview(showBackground = true)
+@Composable
+fun SuccessCatalogGridPreview() {
+    AbsoluteCinemaTheme {
+        val mockData = List(10) { Movie("$it", "", "", "", "") }
+        SuccessCatalogGrid(movieList = mockData)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ErrorCatalogPreview() {
+    AbsoluteCinemaTheme {
+        ErrorCatalog(retryAction = { /*TODO*/ })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoadingCatalogPreview() {
+    AbsoluteCinemaTheme {
+        LoadingCatalog()
+    }
 }

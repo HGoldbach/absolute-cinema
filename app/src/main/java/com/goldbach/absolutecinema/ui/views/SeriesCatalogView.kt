@@ -4,13 +4,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
 import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.MovieTopAppBar
+import com.goldbach.absolutecinema.ui.components.ErrorCatalog
+import com.goldbach.absolutecinema.ui.components.LoadingCatalog
+import com.goldbach.absolutecinema.ui.components.SuccessCatalogGrid
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
 import com.goldbach.absolutecinema.ui.viewmodels.MovieUiState
 import com.goldbach.absolutecinema.ui.viewmodels.SerieGenreViewModel
@@ -52,12 +54,26 @@ fun SerieGenreView(
             )
         }
     ) {
-        when(uiState) {
-            is MovieUiState.Loading -> GenreLoadingScreen(modifier = Modifier.fillMaxSize())
-            is MovieUiState.Error -> GenreErrorScreen(modifier = Modifier.fillMaxSize())
-            is MovieUiState.Success -> GenreSuccessScreen(movieList = uiState.movies, modifier = Modifier
-                .fillMaxSize()
-                .padding(it))
+        when (uiState) {
+            is MovieUiState.Loading -> LoadingCatalog(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            )
+
+            is MovieUiState.Error -> ErrorCatalog(
+                retryAction = viewModel::getSerieByGenre,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            )
+
+            is MovieUiState.Success -> SuccessCatalogGrid(
+                movieList = uiState.movies,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            )
         }
     }
 }
