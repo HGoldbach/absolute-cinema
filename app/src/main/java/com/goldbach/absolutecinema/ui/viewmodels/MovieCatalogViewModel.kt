@@ -10,7 +10,7 @@ import com.goldbach.absolutecinema.data.dto.MovieDto
 import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.data.repositories.MovieApiRepository
 import com.goldbach.absolutecinema.data.repositories.MovieDbRepository
-import com.goldbach.absolutecinema.ui.views.MovieGenreDestination
+import com.goldbach.absolutecinema.ui.views.MovieCatalogDestination
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -21,7 +21,7 @@ class MovieCatalogViewModel(
     private val movieDbRepository: MovieDbRepository
 ) : ViewModel() {
 
-    private val genreId: Int = checkNotNull(savedStateHandle[MovieGenreDestination.genreIdArg])
+    private val genreId: Int = checkNotNull(savedStateHandle[MovieCatalogDestination.genreIdArg])
     var movieUiState: MovieUiState by mutableStateOf(MovieUiState.Loading)
         private set
 

@@ -62,6 +62,7 @@ fun MovieHomeView(
     navigateToMovies: () -> Unit,
     navigateToSeries: () -> Unit,
     navigateToSearch: () -> Unit,
+    navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -73,6 +74,7 @@ fun MovieHomeView(
                 navigateToMovies = navigateToMovies,
                 navigateToSeries = navigateToSeries,
                 navigateToSearch = navigateToSearch,
+                navigateToProfile = navigateToProfile,
                 currentlyRoute = MovieHomeDestination.title
             )
         }

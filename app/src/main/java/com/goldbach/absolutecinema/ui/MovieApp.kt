@@ -35,34 +35,10 @@ import com.goldbach.absolutecinema.ui.navigation.MovieNavHost
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 import com.goldbach.absolutecinema.ui.views.MovieHomeDestination
 import com.goldbach.absolutecinema.ui.views.MovieMenuDestination
+import com.goldbach.absolutecinema.ui.views.ProfileMenuDestination
 import com.goldbach.absolutecinema.ui.views.SearchDestination
 import com.goldbach.absolutecinema.ui.views.SerieMenuDestination
 
-data class BottomNavigationItem(
-    val title: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-)
-
-val items = listOf(
-    BottomNavigationItem(
-        title = "Home",
-        selectedIcon = Icons.Filled.Home,
-        unselectedIcon = Icons.Outlined.Home
-    ),
-    BottomNavigationItem(
-        title = "Search",
-        selectedIcon = Icons.Filled.Search,
-        unselectedIcon = Icons.Outlined.Search
-    ),
-    BottomNavigationItem(
-        title = "Profile",
-        selectedIcon = Icons.Filled.Person,
-        unselectedIcon = Icons.Outlined.Person
-    )
-)
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieApp(navController: NavHostController = rememberNavController()) {
     MovieNavHost(navController = navController)
@@ -78,11 +54,11 @@ fun MovieTopAppBar(
     navigateUp: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
-        title = { Text(text = title)},
+        title = { Text(text = title) },
         scrollBehavior = scrollBehavior,
         modifier = modifier,
         navigationIcon = {
-            if(canNavigateBack) {
+            if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
@@ -95,13 +71,13 @@ fun MovieTopAppBar(
 }
 
 
-
 @Composable
 fun MovieBottomAppBar(
     navigateToHome: () -> Unit = {},
     navigateToMovies: () -> Unit = {},
     navigateToSeries: () -> Unit = {},
     navigateToSearch: () -> Unit = {},
+    navigateToProfile: () -> Unit = {},
     currentlyRoute: String
 ) {
     NavigationBar {
@@ -186,6 +162,26 @@ fun MovieBottomAppBar(
                 )
             }
         )
+        NavigationBarItem(
+            selected = currentlyRoute == ProfileMenuDestination.title,
+            onClick = {
+                navigateToProfile()
+            },
+            icon = {
+                Icon(
+                    imageVector = if (currentlyRoute == ProfileMenuDestination.title) {
+                        Icons.Filled.Person
+                    } else Icons.Outlined.Person,
+                    contentDescription = ProfileMenuDestination.title
+                )
+            },
+            label = {
+                Text(
+                    text = "Profile",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        )
 
     }
 }
@@ -204,6 +200,6 @@ fun MovieTopAppBarPreview() {
 @Composable
 fun MovieBottomAppBarPreview() {
     AbsoluteCinemaTheme {
-        MovieBottomAppBar({},{},{},{},"Movie Genres")
+        MovieBottomAppBar({}, {}, {}, {}, {},"Movie Genres")
     }
 }

@@ -9,6 +9,8 @@ import com.goldbach.absolutecinema.MovieApplication
 import com.goldbach.absolutecinema.ui.viewmodels.HomeViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.MovieCatalogViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.MovieMenuViewModel
+import com.goldbach.absolutecinema.ui.viewmodels.ProfileFavoritesViewModel
+import com.goldbach.absolutecinema.ui.viewmodels.ProfileListViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.SearchViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.SerieCatalogViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.SerieMenuViewModel
@@ -48,6 +50,16 @@ object AppViewModelProvider {
         initializer {
             SearchViewModel(
                 movieApplication().container.movieApiRepository,
+                movieApplication().container.movieDbRepository
+            )
+        }
+        initializer {
+            ProfileListViewModel(
+                movieApplication().container.movieDbRepository
+            )
+        }
+        initializer {
+            ProfileFavoritesViewModel(
                 movieApplication().container.movieDbRepository
             )
         }

@@ -12,5 +12,6 @@ data class MovieDto(
     @SerializedName("poster_path")
     var poster: String,
     @SerializedName("release_date", alternate = ["first_air_date"])
-    var releaseDate: String
+    var releaseDate: String,
+    var isFavorite: Boolean = false
 )

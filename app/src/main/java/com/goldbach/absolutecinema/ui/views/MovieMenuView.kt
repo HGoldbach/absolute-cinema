@@ -31,6 +31,7 @@ fun MovieMenuView(
     navigateToHome: () -> Unit,
     navigateToSeries: () -> Unit,
     navigateToSearch: () -> Unit,
+    navigateToProfile: () -> Unit,
     navigateToGenreSelected: (Int) -> Unit,
     viewModel: MovieMenuViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -48,6 +49,7 @@ fun MovieMenuView(
                 navigateToHome = navigateToHome,
                 navigateToSeries = navigateToSeries,
                 navigateToSearch = navigateToSearch,
+                navigateToProfile = navigateToProfile,
                 currentlyRoute = MovieMenuDestination.title
             )
         }

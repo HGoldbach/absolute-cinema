@@ -1,5 +1,6 @@
 package com.goldbach.absolutecinema.ui.components
 
+import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -28,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -39,7 +42,7 @@ import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 @Composable
 fun SuccessCatalogGrid(
     movieList: List<MovieDto>,
-    onSaveClick: (MovieDto) -> Unit,
+    onSaveClick: (MovieDto) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -68,6 +71,7 @@ fun MovieItem(
     var showModalMovie by remember {
         mutableStateOf(false)
     }
+
     Column(
         modifier = modifier
             .fillMaxSize()

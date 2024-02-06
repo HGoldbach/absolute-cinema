@@ -46,6 +46,7 @@ fun SearchView(
     navigateToHome: () -> Unit,
     navigateToMovie: () -> Unit,
     navigateToSeries: () -> Unit,
+    navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -59,6 +60,7 @@ fun SearchView(
                 navigateToHome = navigateToHome,
                 navigateToMovies = navigateToMovie,
                 navigateToSeries = navigateToSeries,
+                navigateToProfile = navigateToProfile,
                 currentlyRoute = SearchDestination.title
             )
         }

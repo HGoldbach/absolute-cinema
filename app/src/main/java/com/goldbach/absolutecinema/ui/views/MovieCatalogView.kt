@@ -19,7 +19,7 @@ import com.goldbach.absolutecinema.ui.viewmodels.MovieCatalogViewModel
 import com.goldbach.absolutecinema.ui.viewmodels.MovieUiState
 import kotlinx.coroutines.launch
 
-object MovieGenreDestination : NavigationDestination {
+object MovieCatalogDestination : NavigationDestination {
     override val route = "movie"
     override val title = "Movies by Genre"
     const val genreIdArg = "genreId"
@@ -34,6 +34,7 @@ fun MovieGenreView(
     navigateToSeries: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToSearch: () -> Unit,
+    navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MovieCatalogViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -42,7 +43,7 @@ fun MovieGenreView(
     Scaffold(
         topBar = {
             MovieTopAppBar(
-                title = MovieGenreDestination.title,
+                title = MovieCatalogDestination.title,
                 canNavigateBack = canNavigateBack,
                 navigateUp = navigateUp
             )
@@ -53,7 +54,8 @@ fun MovieGenreView(
                 navigateToMovies = navigateUp,
                 navigateToSeries = navigateToSeries,
                 navigateToSearch = navigateToSearch,
-                currentlyRoute = MovieGenreDestination.title
+                navigateToProfile = navigateToProfile,
+                currentlyRoute = MovieCatalogDestination.title
             )
         }
     ) {

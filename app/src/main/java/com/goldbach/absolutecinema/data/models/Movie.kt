@@ -17,5 +17,7 @@ data class Movie(
     @ColumnInfo("poster")
     val poster: String,
     @ColumnInfo("release_date")
-    val releaseDate: String
+    val releaseDate: String,
+    @ColumnInfo("favorite")
+    val isFavorite: Boolean = false
 )
