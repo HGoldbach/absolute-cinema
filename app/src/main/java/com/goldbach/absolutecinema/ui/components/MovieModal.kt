@@ -1,5 +1,6 @@
 package com.goldbach.absolutecinema.ui.components
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,8 +15,10 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +46,7 @@ import com.goldbach.absolutecinema.data.Constants
 import com.goldbach.absolutecinema.data.dto.MovieDto
 import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieModal(
     modifier: Modifier = Modifier,
@@ -51,22 +55,11 @@ fun MovieModal(
     onSave: (MovieDto) -> Unit,
     movie: MovieDto
 ) {
-     if (showModal) {
-        Dialog(
+    if (showModal) {
+        ModalBottomSheet(
             onDismissRequest = onDismiss,
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true
-            ),
         ) {
-
-            Card(
-                modifier = modifier,
-                elevation = CardDefaults.cardElevation(8.dp),
-                shape = RoundedCornerShape(4.dp)
-            ) {
-                MovieModalBody(movie = movie, onClosePressed = onDismiss, onSave = onSave)
-            }
+            MovieModalBody(movie = movie, onClosePressed = onDismiss, onSave = onSave)
         }
     }
 }
@@ -78,51 +71,46 @@ fun MovieModalBody(
     onClosePressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Column(
-        modifier = modifier
-            .padding(dimensionResource(id = R.dimen.padding_medium)),
+        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MovieModalDetails(movie = movie, onClosePressed = onClosePressed)
         Button(
-            onClick = { onSave(movie) },
+            onClick = {
+                onSave(movie)
+                Toast.makeText(
+                    context,
+                    "Movie added to your list!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                onClosePressed()
+            },
             shape = RoundedCornerShape(5.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
         ) {
-           Text(
-               text = "Add to list",
-               style = MaterialTheme.typography.labelSmall
-           )
+            Text(
+                text = "Add to list", style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }
 
 @Composable
 fun MovieModalDetails(
-    movie: MovieDto,
-    onClosePressed: () -> Unit,
-    modifier: Modifier = Modifier
+    movie: MovieDto, onClosePressed: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.size(20.dp))
         Text(
             text = movie.title,
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.padding_small))
-        )
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = "Close icon",
-            modifier = Modifier
-                .size(30.dp)
-                .clickable { onClosePressed() },
-            tint = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.displayMedium,
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
         )
     }
     Card(
@@ -131,28 +119,19 @@ fun MovieModalDetails(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(context = LocalContext.current)
-                .data(Constants.BASE_URL_IMAGE + movie.poster)
-                .crossfade(true)
-                .build(),
+                .data(Constants.BASE_URL_IMAGE + movie.poster).crossfade(true).build(),
             contentDescription = movie.title,
             placeholder = painterResource(id = R.drawable.loading_img),
             error = painterResource(id = R.drawable.ic_broken_image),
             contentScale = ContentScale.Crop,
-            modifier = Modifier.size(300.dp, 300.dp)
+            modifier = Modifier.size(300.dp, 350.dp)
         )
     }
     Text(
         text = movie.description,
         textAlign = TextAlign.Justify,
-        style = MaterialTheme.typography.bodyLarge,
-        modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.padding_small))
-    )
-    Text(
-        text = "Released Date: ${movie.releaseDate}",
-        style = MaterialTheme.typography.labelSmall,
-        modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.padding_small))
+        style = MaterialTheme.typography.displaySmall,
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
     )
 }
 
@@ -160,11 +139,10 @@ fun MovieModalDetails(
 @Composable
 fun MovieModalPreview() {
     AbsoluteCinemaTheme {
-        MovieModal(
-            showModal = true,
+        MovieModalBody(
             movie = MovieDto("1", "Aquaman", "Some text", "", ""),
-            onDismiss = {},
-            onSave = {}
+            onClosePressed = {},
+            onSave = {},
         )
     }
 }

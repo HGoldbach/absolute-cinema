@@ -1,5 +1,6 @@
 package com.goldbach.absolutecinema.ui.views
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -232,7 +235,9 @@ fun HomeMoviesItem(
                 vertical = 8.dp,
                 horizontal = 4.dp
             )
-            .clickable { showModalMovie = true },
+            .clickable {
+                showModalMovie = true
+            },
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {

@@ -1,6 +1,7 @@
 package com.goldbach.absolutecinema.ui.views
 
 import android.text.Spannable.Factory
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -78,6 +79,7 @@ fun ProfileListView(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val uiState by viewModel.profileUiState.collectAsState()
+    val context = LocalContext.current
     Scaffold(
         bottomBar = {
             MovieBottomAppBar(
@@ -95,11 +97,15 @@ fun ProfileListView(
             onRemove = {
                 coroutineScope.launch {
                     viewModel.removeMovie(it)
+                    Toast.makeText(context, "Movie removed from your list", Toast.LENGTH_SHORT)
+                        .show()
                 }
             },
             onFavorite = {
                 coroutineScope.launch {
                     viewModel.setMovieToFavorites(it)
+                    Toast.makeText(context, "Movie added to your favorites", Toast.LENGTH_SHORT)
+                        .show()
                 }
             },
             modifier = Modifier.padding(it)
@@ -159,7 +165,9 @@ fun MovieItem(
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = R.drawable.loading_img),
                     error = painterResource(id = R.drawable.ic_broken_image),
-                    modifier = Modifier.fillMaxWidth().height(235.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(235.dp)
                 )
             }
             Column(
