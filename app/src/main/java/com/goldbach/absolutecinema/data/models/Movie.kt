@@ -19,5 +19,5 @@ data class Movie(
     @ColumnInfo("release_date")
     val releaseDate: String,
     @ColumnInfo("favorite")
-    val isFavorite: Boolean = false
+    var isFavorite: Boolean = false
 )
