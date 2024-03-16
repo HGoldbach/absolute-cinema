@@ -10,6 +10,7 @@ import com.goldbach.absolutecinema.data.dto.MovieDto
 import com.goldbach.absolutecinema.data.models.Movie
 import com.goldbach.absolutecinema.data.repositories.MovieApiRepository
 import com.goldbach.absolutecinema.data.repositories.MovieDbRepository
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -29,11 +30,9 @@ class HomeViewModel(
     var movieUiState: MovieUiState by mutableStateOf(MovieUiState.Loading)
         private set
 
-    init {
-        getRecentlyReleasedMoviesAndPopularSeries()
-    }
 
-    private fun getRecentlyReleasedMoviesAndPopularSeries() {
+
+    fun getRecentlyReleasedMoviesAndPopularSeries() {
         viewModelScope.launch {
             movieUiState = MovieUiState.Loading
             movieUiState = try {
@@ -63,4 +62,7 @@ class HomeViewModel(
         )
     }
 
+    init {
+        getRecentlyReleasedMoviesAndPopularSeries()
+    }
 }
