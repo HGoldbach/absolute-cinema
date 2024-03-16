@@ -127,11 +127,22 @@ fun ProfileListScreen(
                 .fillMaxWidth(),
             textAlign = TextAlign.Center
         )
-        ListGrid(
-            moviesList = moviesList,
-            onRemove = onRemove,
-            onFavorite = onFavorite
-        )
+        if(moviesList.isEmpty()) {
+            Text(
+                text = "Your list is empty.\nSearch for movies/shows and add them",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier
+                    .padding(vertical = 100.dp, horizontal = 16.dp)
+                    .fillMaxSize(),
+                textAlign = TextAlign.Center
+            )
+        } else {
+            ListGrid(
+                moviesList = moviesList,
+                onRemove = onRemove,
+                onFavorite = onFavorite
+            )
+        }
     }
 
 }
