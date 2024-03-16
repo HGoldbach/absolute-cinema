@@ -65,7 +65,7 @@ fun ProfileMenuView(
             )
         }
     ) {
-        ProfileMenuBody(
+        ProfileMenuScreen(
             modifier = Modifier.padding(it),
             navigateToProfileList = navigateToProfileList,
             navigateToProfileFavorites = navigateToProfileFavorites
@@ -74,7 +74,7 @@ fun ProfileMenuView(
 }
 
 @Composable
-fun ProfileMenuBody(
+fun ProfileMenuScreen(
     navigateToProfileList: () -> Unit,
     navigateToProfileFavorites: () -> Unit,
     modifier: Modifier = Modifier
