@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Absolute Cinema</string>
+    <string name="recently_released_movies">Recently Released Movies</string>
+    <string name="popular_tv_shows">Popular TV Shows</string>
 </resources>

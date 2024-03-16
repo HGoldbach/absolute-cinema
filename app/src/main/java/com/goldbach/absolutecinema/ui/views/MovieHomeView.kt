@@ -1,25 +1,26 @@
 package com.goldbach.absolutecinema.ui.views
 
-import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,13 +30,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -84,19 +83,19 @@ fun MovieHomeView(
     ) {
         when (movieUiState) {
             is MovieUiState.Loading -> LoadingGenre(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
                     .padding(it)
             )
 
             is MovieUiState.Error -> ErrorGenre(
                 retryAction = {},
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
                     .padding(it)
             )
 
-            is MovieUiState.Success -> HomeBodyScreen(
+            is MovieUiState.Success -> HomeScreen(
                 moviesList = movieUiState.movies,
                 seriesList = movieUiState.series,
                 onSaveClick = {
@@ -104,7 +103,7 @@ fun MovieHomeView(
                         viewModel.saveMovie(it)
                     }
                 },
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
             )
         }
@@ -112,7 +111,7 @@ fun MovieHomeView(
 }
 
 @Composable
-fun HomeBodyScreen(
+fun HomeScreen(
     moviesList: List<MovieDto>,
     seriesList: List<MovieDto>,
     onSaveClick: (MovieDto) -> Unit,
@@ -120,8 +119,9 @@ fun HomeBodyScreen(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -131,97 +131,89 @@ fun HomeBodyScreen(
                 .padding(vertical = dimensionResource(id = R.dimen.padding_medium)),
             color = MaterialTheme.colorScheme.tertiary
         )
-        Card(
-            modifier = modifier,
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            )
+        HomeSection(title = R.string.recently_released_movies) {
+            ReleasedMovies(moviesList = moviesList, onSaveClick = onSaveClick)
+        }
+        HomeSection(
+            title = R.string.popular_tv_shows,
+            modifier = Modifier.padding(bottom = 100.dp)
         ) {
-            HomeMoviesList(
-                moviesList = moviesList,
-                seriesList = seriesList,
-                onSaveClick = onSaveClick
-            )
+            PopularShows(showsList = seriesList, onSaveClick = onSaveClick)
         }
     }
 }
 
 @Composable
-fun HomeMoviesList(
+fun HomeSection(
+    @StringRes title: Int,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = stringResource(id = title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
+                .padding(horizontal = 16.dp)
+        )
+        content()
+    }
+}
+
+
+@Composable
+fun ReleasedMovies(
     moviesList: List<MovieDto>,
-    seriesList: List<MovieDto>,
     onSaveClick: (MovieDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
+    LazyRow(
         modifier = modifier
-            .padding(dimensionResource(id = R.dimen.padding_medium)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth()
+            .height(200.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
-        item {
-            Text(
-                text = "Recently Released Movies",
+        items(items = moviesList, key = { it.id }) { movie ->
+            HomeMoviesShowsItem(
+                movie = movie,
+                onSaveClick = onSaveClick,
                 modifier = Modifier
-                    .padding(start = 8.dp)
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelSmall
+                    .fillMaxSize()
+                    .width(125.dp)
             )
-            Column() {
-                LazyHorizontalGrid(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    rows = GridCells.Fixed(1)
-                ) {
-                    items(items = moviesList, key = { it.id }) { movie ->
-                        HomeMoviesItem(
-                            movie = movie,
-                            onSaveClick = onSaveClick,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .size(125.dp)
-                        )
-                    }
-                }
-            }
-        }
-        item {
-            Text(
-                text = "Popular TV Series",
-                modifier = Modifier
-                    .padding(top = 20.dp, start = 8.dp)
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelSmall
-            )
-            Column() {
-                LazyHorizontalGrid(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    rows = GridCells.Fixed(1)
-                ) {
-                    items(items = seriesList, key = { it.id }) { series ->
-                        HomeMoviesItem(
-                            movie = series,
-                            onSaveClick = onSaveClick,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .size(125.dp)
-                        )
-                    }
-                }
-            }
         }
     }
-
-
 }
 
 @Composable
-fun HomeMoviesItem(
+fun PopularShows(
+    showsList: List<MovieDto>,
+    onSaveClick: (MovieDto) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        items(items = showsList, key = { it.id }) { show ->
+            HomeMoviesShowsItem(
+                movie = show,
+                onSaveClick = onSaveClick,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .width(125.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun HomeMoviesShowsItem(
     movie: MovieDto,
     onSaveClick: (MovieDto) -> Unit,
     modifier: Modifier = Modifier,
@@ -229,15 +221,32 @@ fun HomeMoviesItem(
     var showModalMovie by remember {
         mutableStateOf(false)
     }
+    ItemCard(
+        onCardClick = { showModalMovie = true },
+        movie,
+        modifier = modifier
+    )
+    MovieModal(
+        showModal = showModalMovie,
+        onDismiss = { showModalMovie = false },
+        onSave = onSaveClick,
+        movie = movie
+    )
+}
+
+@Composable
+fun ItemCard(
+    onCardClick: () -> Unit,
+    movie: MovieDto,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier
             .padding(
                 vertical = 8.dp,
                 horizontal = 4.dp
             )
-            .clickable {
-                showModalMovie = true
-            },
+            .clickable { onCardClick() },
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
@@ -254,21 +263,67 @@ fun HomeMoviesItem(
                 .fillMaxWidth()
         )
     }
-    MovieModal(
-        showModal = showModalMovie,
-        onDismiss = { showModalMovie = false },
-        onSave = onSaveClick,
-        movie = movie
-    )
+}
 
 
+@Preview(showBackground = true, heightDp = 200, widthDp = 120)
+@Composable
+private fun ItemCardPreview() {
+    AbsoluteCinemaTheme {
+        ItemCard(
+            movie = MovieDto("", "", "", "", ""),
+            onCardClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true,heightDp = 400, widthDp = 240)
+@Composable
+private fun HomeMoviesShowsItemPreview() {
+    AbsoluteCinemaTheme {
+        HomeMoviesShowsItem(movie = MovieDto("", "Pirates of Caribbean", "Description of Pirates of Caribbean", "", ""), onSaveClick = {})
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun HomeMoviesListPreview() {
+private fun ReleasedMoviesPreview() {
     AbsoluteCinemaTheme {
         val mockData = List(10) { MovieDto("$it", "", "", "", "") }
-        HomeMoviesList(moviesList = mockData, seriesList = mockData, {})
+        ReleasedMovies(moviesList = mockData, onSaveClick = {})
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun PopularShowsPreview() {
+    AbsoluteCinemaTheme {
+        val mockData = List(10) { MovieDto("$it", "", "", "", "") }
+        PopularShows(showsList = mockData, onSaveClick = {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeSectionPreview() {
+    AbsoluteCinemaTheme {
+        HomeSection(title = R.string.recently_released_movies) {
+            val mockData = List(10) { MovieDto("$it", "", "", "", "") }
+            ReleasedMovies(moviesList = mockData, onSaveClick = {})
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenPreview() {
+    AbsoluteCinemaTheme {
+        val mockData = List(10) { MovieDto("$it", "", "", "", "") }
+        HomeScreen(
+            moviesList = mockData,
+            seriesList = mockData,
+            onSaveClick = {}
+        )
+    }
+}
+
