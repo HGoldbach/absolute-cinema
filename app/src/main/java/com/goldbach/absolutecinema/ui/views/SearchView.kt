@@ -1,37 +1,45 @@
 package com.goldbach.absolutecinema.ui.views
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.goldbach.absolutecinema.R
+import com.goldbach.absolutecinema.data.dto.MovieDto
 import com.goldbach.absolutecinema.ui.AppViewModelProvider
 import com.goldbach.absolutecinema.ui.MovieBottomAppBar
 import com.goldbach.absolutecinema.ui.components.MovieItem
 import com.goldbach.absolutecinema.ui.navigation.NavigationDestination
+import com.goldbach.absolutecinema.ui.theme.AbsoluteCinemaTheme
 import com.goldbach.absolutecinema.ui.viewmodels.SearchViewModel
 import kotlinx.coroutines.launch
 
@@ -40,7 +48,6 @@ object SearchDestination : NavigationDestination {
     override val title = "Search"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchView(
     navigateToHome: () -> Unit,
@@ -50,7 +57,6 @@ fun SearchView(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val isActiveSearch by viewModel.isActiveSearch.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
     val movies by viewModel.results.collectAsState()
     val coroutineScope = rememberCoroutineScope()
@@ -65,84 +71,164 @@ fun SearchView(
             )
         }
     ) {
-        Column(
-            modifier = modifier.padding(it),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            SearchBar(
-                query = searchText,
-                onQueryChange = viewModel::onSearchTextChange,
-                onSearch = {
-                    viewModel.searchMovies(searchText)
-                    viewModel.changeActiveSearch()
-                },
-                active = isActiveSearch,
-                onActiveChange = { viewModel.changeActiveSearch() },
-                colors = SearchBarDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                ),
-                tonalElevation = 0.dp,
-                placeholder = { Text(text = "Search") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search Icon"
-                    )
-                },
-                trailingIcon = {
-                    if (isActiveSearch) {
-                        Icon(
-                            modifier = Modifier.clickable {
-                                if (searchText.isNotEmpty()) {
-                                    viewModel.onSearchTextChange("")
-                                } else {
-                                    viewModel.changeActiveSearch()
-                                }
-                            },
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Close Icon"
-                        )
-                    }
-                },
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .padding(20.dp)
-            ) {}
-            Spacer(modifier = Modifier.height(16.dp))
-            if(movies.isEmpty()) {
+        SearchScreen(
+            searchText = searchText,
+            onSearchChange = { text ->
+                coroutineScope.launch {
+                    viewModel.onSearchTextChange(text)
+                }
+            },
+            searchMovies = { viewModel.searchMovies(searchText) },
+            onSaveClick = { movie ->
+                coroutineScope.launch {
+                    viewModel.saveMovie(movie)
+                }
+            },
+            movies = movies,
+            modifier = modifier.padding(it)
+        )
+    }
+}
+
+@Composable
+fun SearchScreen(
+    searchText: String,
+    onSearchChange: (String) -> Unit,
+    searchMovies: () -> Unit,
+    onSaveClick: (MovieDto) -> Unit,
+    movies: List<MovieDto>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+        Text(
+            text = "Search Movies/Shows",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+                .paddingFromBaseline(top = 50.dp, bottom = 20.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        SearchBar(
+            searchText = searchText,
+            onSearchChange = onSearchChange,
+            searchMovies = searchMovies,
+            modifier = Modifier.padding(
+                start = 20.dp,
+                end = 20.dp,
+                bottom = 20.dp
+            )
+        )
+        if (movies.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(text = "No movies/series found", style = MaterialTheme.typography.labelSmall)
                 Text(text = "Try adjusting your search", style = MaterialTheme.typography.bodyLarge)
             }
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal =  20.dp,
-                        vertical = 5.dp
-                    )
-            ) {
-                items(items = movies) { movie ->
-                    if(movie.description != null) {
-                        MovieItem(
-                            movie = movie,
-                            onSaveClick = {
-                                coroutineScope.launch {
-                                    viewModel.saveMovie(it)
-                                }
-                            }
-                        )
-                    }
-                }
+        } else {
+            MoviesShowsGrid(
+                movies = movies,
+                onSaveClick = onSaveClick
+            )
+        }
+    }
+}
+
+@Composable
+fun SearchBar(
+    searchText: String,
+    onSearchChange: (String) -> Unit,
+    searchMovies: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val focusManager = LocalFocusManager.current
+    TextField(
+        value = searchText,
+        onValueChange = {
+            onSearchChange(it)
+            searchMovies()
+        },
+        leadingIcon = {
+            Icon(imageVector = Icons.Default.Search, contentDescription = null)
+        },
+        maxLines = 1,
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.surface
+        ),
+        placeholder = {
+            Text(text = stringResource(R.string.placeholder_search))
+        },
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 56.dp)
+    )
+}
+
+@Composable
+fun MoviesShowsGrid(
+    movies: List<MovieDto>,
+    onSaveClick: (MovieDto) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = 20.dp,
+                vertical = 5.dp
+            )
+    ) {
+        movies.filter { movie ->
+            movie.description != null
+        }.let {  movies ->
+            items(items = movies) { movie ->
+                MovieItem(movie = movie, onSaveClick = { onSaveClick(it) })
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
 @Composable
-fun SearchViewBody(
-    modifier: Modifier = Modifier
-) {
-
+private fun SearchBarPreview() {
+    AbsoluteCinemaTheme {
+        SearchBar(searchText = "", onSearchChange = {}, searchMovies = {}, Modifier.padding(8.dp))
+    }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun MoviesShowsGridPreview() {
+    AbsoluteCinemaTheme {
+        val mockData = List(10) { MovieDto("$it", "$it - Movie", "", "", "") }
+        MoviesShowsGrid(
+            movies = mockData,
+            onSaveClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SearchScreenPreview() {
+    AbsoluteCinemaTheme {
+        val mockData = List(10) { MovieDto("$it", "$it - Movie", "", "", "") }
+        SearchScreen(
+            searchText = "",
+            onSearchChange = {},
+            searchMovies = { /*TODO*/ },
+            onSaveClick = {},
+            movies = mockData
+        )
+    }
+}
+
+
